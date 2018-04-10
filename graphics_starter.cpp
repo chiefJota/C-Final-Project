@@ -16,7 +16,7 @@ void init() {
 // Initialize OpenGL Graphics
 void initGL() {
     // Set "clearing" or background color
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black and opaque
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 // Handler for window-repaint event. Call back when the window first appears and
@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
     glutInitWindowSize((int)width, (int)height);
     glutInitWindowPosition(100, 200); // Position the window's initial top-left corner
     /* create the window and store the handle to it */
-    wd = glutCreateWindow("Graphics Baseline"); // Title
+    wd = glutCreateWindow("Camping Survival"); // Title
     
     // Register callback handler for window re-paint event
     glutDisplayFunc(display);
