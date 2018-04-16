@@ -1,6 +1,12 @@
 #include "Player.h"
 
 /// Color Struct
+colorStruct::colorStruct() {
+    red = 0;
+    green = 0;
+    blue = 0;
+}
+
 colorStruct::colorStruct(double redIn, double greenIn, double blueIn) {
     red = redIn;
     green = greenIn;
@@ -8,6 +14,11 @@ colorStruct::colorStruct(double redIn, double greenIn, double blueIn) {
 }
 
 /// Position Struct
+posStruct::posStruct() {
+    xPos = 0;
+    yPos = 0;
+}
+
 posStruct::posStruct(int xIn, int yIn) {
     xPos = xIn;
     yPos = yIn;
@@ -15,6 +26,13 @@ posStruct::posStruct(int xIn, int yIn) {
 
 /// Player Class
 // Constructors
+Player::Player() {
+    color = colorStruct();
+    pos = posStruct();
+    foodLevel = 0;
+    waterLevel = 0;
+}
+
 Player::Player(colorStruct color, posStruct pos) : color(color), pos(pos) {
     // Set Food and Water
     foodLevel = 100;
@@ -78,4 +96,53 @@ void Player::setFoodLevel(double level) {
 
 void Player::setWaterLevel(double level) {
     waterLevel = level;
+}
+
+// Text I/O Streams
+std::ostream &operator << (std::ostream &outs, const Player &p) {
+    // Write variables
+    outs << "Player: "
+         << p.foodLevel << " "
+         << p.waterLevel << " "
+         << p.pos.xPos << " "
+         << p.pos.yPos << " "
+         << p.color.red << " "
+         << p.color.green << " "
+         << p.color.blue;
+
+    // Return the out stream
+    return outs;
+}
+
+std::istream &operator >> (std::istream &ins, Player &p) {
+    // Remove name from text
+    std::string name;
+    ins >> name;
+
+    // Assign easy variables
+    ins >> p.foodLevel;
+    ins >> p.waterLevel;
+
+    // Build position struct
+    int x;
+    int y;
+    ins >> x;
+    ins >> y;
+
+    // Assign position struct
+    p.pos = posStruct(x,y);
+
+    // Build color struct
+    double r;
+    double g;
+    double b;
+    ins >> r;
+    ins >> g;
+    ins >> b;
+
+    // Assign position struct
+    p.color = colorStruct(r,g,b);
+
+    // Return the in stream
+    return ins;
 }

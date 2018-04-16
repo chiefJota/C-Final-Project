@@ -1,6 +1,8 @@
 #ifndef CAMPINGSURVIVAL_PLAYER_H
 #define CAMPINGSURVIVAL_PLAYER_H
 
+#include <iostream>
+
 /// Move Direction Enum
 enum moveDirection {up,down,left,right};
 
@@ -10,6 +12,7 @@ struct colorStruct {
     double green;
     double blue;
 
+    colorStruct();
     colorStruct(double redIn, double greenIn, double blueIn);
 };
 
@@ -18,6 +21,7 @@ struct posStruct {
     int xPos;
     int yPos;
 
+    posStruct();
     posStruct(int xIn, int yIn);
 };
 
@@ -31,6 +35,8 @@ private:
 
 public:
     // Constructor
+    Player();
+
     /**
      * Requires: Color, Position
      * Modifies: pos, color, foodLevel, waterLevel
@@ -103,6 +109,20 @@ public:
      * Effects: Sets the water level to the level supplied
     */
     void setWaterLevel(double level);
+
+    /**
+     * Requires: None
+     * Modifies: None
+     * Effects: Prints the data of the Player to text
+    */
+    friend std::ostream& operator << (std::ostream& outs, const Player &p);
+
+    /**
+     * Requires: None
+     * Modifies: None
+     * Effects: Reads the data of the Player from text
+    */
+    friend std::istream& operator >> (std::istream& ins, Player &p);
 
 };
 
