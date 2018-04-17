@@ -1,10 +1,14 @@
 # Camping Survival
-## Git Workflow
-1. Open Git in folder
-    * Right click in the folder and select 'Git Bash Here'
-2. 'git status' to list changed files
-3. Check that files listed are the ones you want to upload
-4. 'git add -A' to add all files
-5. 'git commit -m "MESSAGE"' to commit all files
-    * MESSAGE is where you would put a good description of your commit
-6. 'git push origin master' to push to the repo
+## Git with a Group Commands
+To be used after you link your local repo to the project on GitLab.
+* git pull origin master
+* git checkout -b [YOUR_INITIALS]_[WORK_DESIGNATION]
+* Do work. Check to see if it works.
+* git add -A
+* git commit -m "[COMMIT_MESSAGE]"
+* git push origin [YOUR_INITIALS]_[WORK_DESIGNATION]
+* On GitLab, send a merge request for your branch
+* Wait for code approval.
+* git checkout master
+* git pull origin master
+* git branch -D [YOUR_INITIALS]_[WORK_DESIGNATION]
