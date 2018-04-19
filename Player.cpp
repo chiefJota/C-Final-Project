@@ -98,6 +98,34 @@ void Player::setWaterLevel(double level) {
     waterLevel = level;
 }
 
+// Testing Method
+void Player::testFunctionality() {
+    std::cout << "Player Before:" << this << std::endl;
+    std::cout << "getPos: (" <<getPos().xPos << "," << getPos().yPos << ")" << std::endl;
+    std::cout << "getColor: RGB(" << getColor().red << "," << getColor().green << "," << getColor().blue << ")" << std::endl;
+    std::cout << "getFoodLevel: " << getFoodLevel() << std::endl;
+    std::cout << "getWaterLevel: " << getWaterLevel() << std::endl;
+
+    changeFoodLevel(-10);
+    std::cout << "changeFoodLevel: " << foodLevel << std::endl;
+    changeWaterLevel(-10);
+    std::cout << "changeWaterLevel: " << waterLevel << std::endl;
+
+    setFoodLevel(15);
+    std::cout << "setFoodLevel: " << foodLevel << std::endl;
+    setWaterLevel(15);
+    std::cout << "setWaterLevel: " << waterLevel << std::endl;
+
+    move(up);
+    std::cout << "Move Up: (" <<getPos().xPos << "," << getPos().yPos << ")" << std::endl;
+    move(left);
+    std::cout << "Move Left: (" <<getPos().xPos << "," << getPos().yPos << ")" << std::endl;
+    move(right);
+    std::cout << "Move Right: (" <<getPos().xPos << "," << getPos().yPos << ")" << std::endl;
+    move(down);
+    std::cout << "Move Down: (" <<getPos().xPos << "," << getPos().yPos << ")" << std::endl;
+}
+
 // Text I/O Streams
 std::ostream &operator << (std::ostream &outs, const Player &p) {
     // Write variables

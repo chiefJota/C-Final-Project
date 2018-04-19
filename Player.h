@@ -113,6 +113,13 @@ public:
     /**
      * Requires: None
      * Modifies: None
+     * Effects: Runs and prints testing for this class
+    */
+    void testFunctionality();
+
+    /**
+     * Requires: None
+     * Modifies: None
      * Effects: Prints the data of the Player to text
     */
     friend std::ostream& operator << (std::ostream& outs, const Player &p);
