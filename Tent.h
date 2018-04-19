@@ -20,9 +20,18 @@ protected:
 
 
 public:
+    /**
+     * Requires:
+     * Modifies:
+     * Effects:sets the color and pos structs as temporary values for testing
+    */
     Tent();
 
-    // Handle mouse button pressed and released events
+    /**
+     * Requires:input from mouse on tent object
+     * Modifies:
+     * Effects:triggers moves to next day function
+    */
     void mouse(int button, int state, int x, int y);
 
     /**
@@ -50,8 +59,10 @@ public:
      * Requires:items are necessary and cannot be added until graphic portion
      * Modifies:
      * Effects:gets items
+     * this method will not be defined until graphics portion and we decide how to store and display
+     * the items graphically
     */
-    double getItems(std::vector<std::unique_ptr<Item>> &items);
+    //double getItems(std::vector<std::unique_ptr<Item>> &items);
 
     /**
      * Requires:
