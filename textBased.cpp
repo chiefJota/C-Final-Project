@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "Player.h"
+#include "Tent.h"
 
 using namespace std;
 
@@ -18,6 +19,8 @@ int main() {
     /// Variables
     string fileName = "saveData.txt";
 
+    Tent tent;
+    tent.testTent();
     /// Class Testing
     // TODO: Implement class testing
 
