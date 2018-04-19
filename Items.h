@@ -33,11 +33,11 @@ public:
      * to be overriden
      * @return
      */
-    virtual std::string getItem() = 0;
+    virtual std::string getItem() const = 0;
 
-    virtual colorStruct getColor() = 0;
+    virtual colorStruct getColor() const = 0;
 
-    virtual posStruct getPosition() = 0;
+    virtual posStruct getPosition() const = 0;
 
     /**
      * setters which are all
@@ -52,13 +52,15 @@ public:
 
     virtual posStruct setPos(posStruct pos) = 0;
 
+    virtual void setPoison(bool poison) = 0;
+
     /**
      * isMushroom function
      * is pure virtual and is
      * overriden in foodItem
      * and WaterItem classes
      */
-    virtual bool isMushroom() = 0;
+    virtual bool isMushroom() const = 0;
 
 };
 
@@ -87,7 +89,7 @@ public:
      * of the food item
      *
      */
-    posStruct getPosition() override ;
+    posStruct getPosition() const override ;
 
 
     /**
@@ -96,7 +98,7 @@ public:
      * Effects: gets the color
      * of the food item
      */
-    colorStruct getColor() override;
+    colorStruct getColor() const override;
 
     /**
     * Requires: Nothing
@@ -104,7 +106,7 @@ public:
     * Effects: gets the name
     * of the food item
     */
-    std::string getItem() override ;
+    std::string getItem() const override ;
 
 
     /**
@@ -132,6 +134,14 @@ public:
     posStruct setPos(posStruct pos) override;
 
     /**
+    * Requires: bool
+    * Modifies: food item isPoison
+    * Effects: sets the isPoison
+    * of the food item
+    */
+    void setPoison(bool poison) override;
+
+    /**
      * Requires: Nothing
      * Modifies: determines if the
      * food item is poisionous or not (true or false)
@@ -139,13 +149,26 @@ public:
      * by eating a fooditem that is poisonous
      *
      */
-    bool isMushroom() override;
+    bool isMushroom() const override;
 
     /**
      * Testing function for FoodItem class
      */
     void testFoodItem();
 
+    /**
+     * Requires: None
+     * Modifies: None
+     * Effects: Prints the data of the FoodItem to text
+    */
+    friend std::ostream& operator << (std::ostream& outs, const FoodItem &item);
+
+    /**
+     * Requires: None
+     * Modifies: None
+     * Effects: Reads the data of the FoodItem from text
+    */
+    friend std::istream& operator >> (std::istream& ins, FoodItem &item);
 };
 
 class WaterItem : public Item {
@@ -172,7 +195,7 @@ public:
     * Effects: gets the name
     * of the water item
     */
-    std::string getItem() override;
+    std::string getItem() const override;
 
     /**
      * Requires: Nothing
@@ -181,7 +204,7 @@ public:
      * of the water item
      *
      */
-    posStruct getPosition() override;
+    posStruct getPosition() const override;
 
 
     /**
@@ -190,7 +213,7 @@ public:
     * Effects: gets the color
     * of the water item
     */
-    colorStruct getColor() override;
+    colorStruct getColor() const override;
 
     /**
     * Requires: Nothing
@@ -218,6 +241,14 @@ public:
     posStruct setPos(posStruct pos) override;
 
     /**
+    * Requires: bool
+    * Modifies: food item isPoison
+    * Effects: sets the isPoison
+    * of the food item
+    */
+    void setPoison(bool poison) override;
+
+    /**
     * Requires: Nothing
     * Modifies: determines if the
     * food item is poisionous or not (true or false)
@@ -225,7 +256,7 @@ public:
     * by eating a fooditem that is poisonous
     *
     */
-    bool isMushroom() override;
+    bool isMushroom() const override;
 
 
     /**
@@ -233,6 +264,20 @@ public:
      *
      */
     void testWaterItem();
+
+    /**
+     * Requires: None
+     * Modifies: None
+     * Effects: Prints the data of the FoodItem to text
+    */
+    friend std::ostream& operator << (std::ostream& outs, const WaterItem &item);
+
+    /**
+     * Requires: None
+     * Modifies: None
+     * Effects: Reads the data of the FoodItem from text
+    */
+    friend std::istream& operator >> (std::istream& ins, WaterItem &item);
 
 
 };

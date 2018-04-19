@@ -21,7 +21,26 @@ Item::Item(std::string &name, colorStruct color, posStruct pos) {
 
 //default constructor for FoodItem
 FoodItem::FoodItem(){
+    srand(time(NULL));
 
+    int windowW = 500;
+    int windowH = 500;
+
+    name = "Food";
+    this->color = colorStruct(0,0,1);
+    this->pos = posStruct(rand() % windowW, rand() % windowH);
+
+    int MIN_CHANCE = 1;
+    int MAX_CHANCE = 100;
+
+    int poisonChance = rand() % MAX_CHANCE + MIN_CHANCE;
+
+    if (poisonChance < 25){
+        isPoisonous = true;
+    }
+    else{
+        isPoisonous= false;
+    }
 }
 
 //non default constructor for FoodItem
@@ -29,42 +48,6 @@ FoodItem::FoodItem(std::string &n, colorStruct color, posStruct pos) {
     name = n;
     this->color = color;
     this->pos = pos;
-}
-
-/**
- * Getters for FoodItem
- */
-std::string FoodItem::getItem() {
-    return name;
-}
-
-posStruct FoodItem::getPosition() {
-    return  pos;
-}
-
-colorStruct FoodItem::getColor() {
-    return color;
-}
-
-
-/**
- * Setters for FoodItem
- */
-std::string FoodItem::setName(std::string food) {
-    name = food;
-}
-colorStruct FoodItem::setColor(colorStruct Color) {
-    color = Color;
-}
-
-posStruct FoodItem::setPos(posStruct position) {
-    pos = position;
-}
-
-/**
- * isMushroom method
- */
-bool::FoodItem::isMushroom() {
 
     /*
     * Random 1 to 100
@@ -87,13 +70,134 @@ bool::FoodItem::isMushroom() {
     else{
         isPoisonous= false;
     }
+}
 
+/**
+ * Getters for FoodItem
+ */
+std::string FoodItem::getItem() const {
+    return name;
+}
+
+posStruct FoodItem::getPosition() const {
+    return  pos;
+}
+
+colorStruct FoodItem::getColor() const {
+    return color;
+}
+
+
+/**
+ * Setters for FoodItem
+ */
+std::string FoodItem::setName(std::string food) {
+    name = food;
+}
+colorStruct FoodItem::setColor(colorStruct Color) {
+    color = Color;
+}
+
+posStruct FoodItem::setPos(posStruct position) {
+    pos = position;
+}
+
+void FoodItem::setPoison(bool poison) {
+    isPoisonous = poison;
+}
+
+/**
+ * isMushroom method
+ */
+bool::FoodItem::isMushroom() const {
     return isPoisonous;
+}
+
+/**
+ * Text I/O Streams
+ */
+std::ostream &operator << (std::ostream &outs, const FoodItem &item) {
+    // Convert Name
+    std::string outName = item.getItem();
+    for(int i = 0; i < outName.length(); i++) {
+        if(outName[i] == ' ') {
+            outName[i] = '_';
+        }
+    }
+
+    // Write variables
+    outs << "FoodItem: "
+         << outName << " "
+         << item.isMushroom() << " "
+         << item.getPosition().xPos << " "
+         << item.getPosition().yPos << " "
+         << item.getColor().red << " "
+         << item.getColor().green << " "
+         << item.getColor().blue;
+
+    // Return the out stream
+    return outs;
+}
+
+std::istream &operator >> (std::istream &ins, FoodItem &item) {
+    // Remove name from text
+    std::string name;
+    ins >> name;
+
+    // Assign easy variables
+    std::string inName;
+    bool inPoison;
+    ins >> inName;
+    ins >> inPoison;
+    item.setName(inName);
+    item.setPoison(inPoison);
+
+    // Build position struct
+    int x;
+    int y;
+    ins >> x;
+    ins >> y;
+
+    // Assign position struct
+    item.setPos(posStruct(x,y));
+
+    // Build color struct
+    double r;
+    double g;
+    double b;
+    ins >> r;
+    ins >> g;
+    ins >> b;
+
+    // Assign position struct
+    item.setColor(colorStruct(r,g,b));
+
+    // Return the in stream
+    return ins;
 }
 
 //default constructor for WaterItem
 WaterItem::WaterItem(){
+    srand(time(NULL));
 
+    int windowW = 500;
+    int windowH = 500;
+
+    name = "Water";
+    this->color = colorStruct(0,0,1);
+    this->pos = posStruct(rand() % windowW, rand() % windowH);
+
+    int MIN_CHANCE = 1;
+    int MAX_CHANCE = 100;
+
+    int poisonChance = rand() % MAX_CHANCE + MIN_CHANCE;
+
+    if (poisonChance < 25){
+        isPoisonous = true;
+    }
+    else{
+        isPoisonous= false;
+    }
 }
 
 //no default constructor for WaterItem
@@ -101,20 +205,34 @@ WaterItem::WaterItem(std::string &n, colorStruct color, posStruct pos) {
     name = n;
     this->color = color;
     this->pos = pos;
+
+    srand(time(NULL));
+
+    int MIN_CHANCE = 1;
+    int MAX_CHANCE = 100;
+
+    int poisonChance = rand() % MAX_CHANCE + MIN_CHANCE;
+
+    if (poisonChance < 25){
+        isPoisonous = true;
+    }
+    else{
+        isPoisonous= false;
+    }
 }
 
 /**
  * Getters for WaterItem
  */
-std::string WaterItem::getItem() {
+std::string WaterItem::getItem() const {
     return name;
 }
 
-posStruct WaterItem::getPosition() {
+posStruct WaterItem::getPosition() const {
     return pos;
 }
 
-colorStruct WaterItem::getColor() {
+colorStruct WaterItem::getColor() const {
     return color;
 }
 
@@ -135,30 +253,80 @@ colorStruct WaterItem::setColor(colorStruct Color) {
     color = Color;
 }
 
+void WaterItem::setPoison(bool poison) {
+    isPoisonous = poison;
+}
+
 /**
  * isMushroom method for WaterItem
  * @return
  */
-bool ::WaterItem::isMushroom() {
-
-    srand(time(NULL));
-
-    int MIN_CHANCE = 1;
-    int MAX_CHANCE = 100;
-
-    int poisonChance = rand() % MAX_CHANCE + MIN_CHANCE;
-
-    if (poisonChance < 25){
-        isPoisonous = true;
-    }
-    else{
-        isPoisonous= false;
-    }
-
+bool ::WaterItem::isMushroom() const {
     return isPoisonous;
 }
 
+/**
+ * Text I/O Streams
+ */
+std::ostream &operator << (std::ostream &outs, const WaterItem &item) {
+    // Convert Name
+    std::string outName = item.getItem();
+    for(int i = 0; i < outName.length(); i++) {
+        if(outName[i] == ' ') {
+            outName[i] = '_';
+        }
+    }
 
+    // Write variables
+    outs << "WaterItem: "
+         << outName << " "
+         << item.isMushroom() << " "
+         << item.getPosition().xPos << " "
+         << item.getPosition().yPos << " "
+         << item.getColor().red << " "
+         << item.getColor().green << " "
+         << item.getColor().blue;
+
+    // Return the out stream
+    return outs;
+}
+
+std::istream &operator >> (std::istream &ins, WaterItem &item) {
+    // Remove name from text
+    std::string name;
+    ins >> name;
+
+    // Assign easy variables
+    std::string inName;
+    bool inPoison;
+    ins >> inName;
+    ins >> inPoison;
+    item.setName(inName);
+    item.setPoison(inPoison);
+
+    // Build position struct
+    int x;
+    int y;
+    ins >> x;
+    ins >> y;
+
+    // Assign position struct
+    item.setPos(posStruct(x,y));
+
+    // Build color struct
+    double r;
+    double g;
+    double b;
+    ins >> r;
+    ins >> g;
+    ins >> b;
+
+    // Assign position struct
+    item.setColor(colorStruct(r,g,b));
+
+    // Return the in stream
+    return ins;
+}
 
 /**
  * testing function for FoodItem
@@ -197,7 +365,7 @@ void WaterItem::testWaterItem(){
     std::cout << "getColor: RGB(" << getColor().red << "," << getColor().green << "," << getColor().blue << ")" << std::endl;
     std::cout << std::boolalpha << isMushroom() << std::endl;
 
-    name = "Distilled Water";
+    setName("Distilled Water");
     std::cout << "Water name: " << getItem() << std::endl;
     setPos(posStruct(2, 1));
     std::cout << "getPos: (" << getPosition().xPos << "," << getPosition().yPos << ")" << std::endl;
