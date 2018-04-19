@@ -6,10 +6,12 @@
 
 #include <regex>
 
+//default constructor
 Item::Item() {
 
 }
 
+//non default constructor
 Item::Item(std::string &name, colorStruct color, posStruct pos) {
     name = " ";
     this->color = color;
@@ -17,18 +19,21 @@ Item::Item(std::string &name, colorStruct color, posStruct pos) {
 }
 
 
-
+//default constructor for FoodItem
 FoodItem::FoodItem(){
 
 }
 
+//non default constructor for FoodItem
 FoodItem::FoodItem(std::string &n, colorStruct color, posStruct pos) {
     name = n;
     this->color = color;
     this->pos = pos;
 }
 
-
+/**
+ * Getters for FoodItem
+ */
 std::string FoodItem::getItem() {
     return name;
 }
@@ -42,6 +47,9 @@ colorStruct FoodItem::getColor() {
 }
 
 
+/**
+ * Setters for FoodItem
+ */
 std::string FoodItem::setName(std::string food) {
     name = food;
 }
@@ -53,6 +61,9 @@ posStruct FoodItem::setPos(posStruct position) {
     pos = position;
 }
 
+/**
+ * isMushroom method
+ */
 bool::FoodItem::isMushroom() {
 
     /*
@@ -80,17 +91,21 @@ bool::FoodItem::isMushroom() {
     return isPoisonous;
 }
 
-
+//default constructor for WaterItem
 WaterItem::WaterItem(){
 
 }
 
+//no default constructor for WaterItem
 WaterItem::WaterItem(std::string &n, colorStruct color, posStruct pos) {
     name = n;
     this->color = color;
     this->pos = pos;
 }
 
+/**
+ * Getters for WaterItem
+ */
 std::string WaterItem::getItem() {
     return name;
 }
@@ -103,6 +118,11 @@ colorStruct WaterItem::getColor() {
     return color;
 }
 
+/**
+ * Setters for WaterItem
+ * @param water
+ * @return
+ */
 std::string WaterItem::setName(std::string water) {
     name = water;
 }
@@ -115,7 +135,11 @@ colorStruct WaterItem::setColor(colorStruct Color) {
     color = Color;
 }
 
-bool::WaterItem::isMushroom() {
+/**
+ * isMushroom method for WaterItem
+ * @return
+ */
+bool ::WaterItem::isMushroom() {
 
     srand(time(NULL));
 
@@ -136,6 +160,9 @@ bool::WaterItem::isMushroom() {
 
 
 
+/**
+ * testing function for FoodItem
+ */
 void FoodItem::testFoodItem(){
 
     std::cout << "Food Item Before:" << this << std::endl;
@@ -157,7 +184,9 @@ void FoodItem::testFoodItem(){
 
 
 
-
+/**
+ * testing function for WoodItem
+ */
 void WaterItem::testWaterItem(){
 
     std::cout << "Water Item Before:" << this << std::endl;
