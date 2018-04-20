@@ -1,7 +1,3 @@
-//
-// Created by Workstation2 on 4/10/2018.
-//
-
 #include "Tent.h"
 
 Tent::Tent() {
@@ -47,6 +43,88 @@ bool Tent::tick(){
 
 double Tent::getCurrentTime(){
     return curTime;
+}
+
+// Text I/O Streams
+std::ostream &operator << (std::ostream &outs, const Tent &t) {
+    // Write variables
+    outs << "Tent: "
+         << t.curDay << " "
+         << t.curTime << " "
+         << t.startTime << " "
+         << t.pos.xPos << " "
+         << t.pos.yPos << " "
+         << t.color.red << " "
+         << t.color.green << " "
+         << t.color.blue << " ";
+
+//    // Write Array
+//    for(int i = t.items.size()-1; i >= 0; i--) {
+//        // Pull object from pointer
+//        // Sort
+//        if(t.items[i]->getItem().find("Water") != std::string::npos) {
+//            // Water object
+//            // Build object
+//            WaterItem piece;
+//            piece.setName(t.items[i]->getItem());
+//            piece.setPoison(t.items[i]->isMushroom());
+//            piece.setColor(colorStruct(t.items[i]->getColor().red,t.items[i]->getColor().green,t.items[i]->getColor().blue));
+//            piece.setPos(posStruct(t.items[i]->getPosition().xPos,t.items[i]->getPosition().yPos));
+//
+//            // Send the object
+//            // Add item to save
+//            outs << piece << " ";
+//        } else {
+//            // Food object
+//            // Build object
+//            FoodItem piece;
+//            piece.setName(t.items[i]->getItem());
+//            piece.setPoison(t.items[i]->isMushroom());
+//            piece.setColor(colorStruct(t.items[i]->getColor().red,t.items[i]->getColor().green,t.items[i]->getColor().blue));
+//            piece.setPos(posStruct(t.items[i]->getPosition().xPos,t.items[i]->getPosition().yPos));
+//
+//            // Send the object
+//            // Add item to save
+//            outs << piece << " ";
+//        }
+//    }
+
+    // Return the out stream
+    return outs;
+}
+
+std::istream &operator >> (std::istream &ins, Tent t) {
+    // Remove name from text
+    std::string name;
+    ins >> name;
+
+    // Assign easy variables
+    ins >> t.curDay;
+    ins >> t.curTime;
+    ins >> t.startTime;
+
+    // Build position struct
+    int x;
+    int y;
+    ins >> x;
+    ins >> y;
+
+    // Assign position struct
+    t.pos = posStruct(x,y);
+
+    // Build color struct
+    double r;
+    double g;
+    double b;
+    ins >> r;
+    ins >> g;
+    ins >> b;
+
+    // Assign position struct
+    t.color = colorStruct(r,g,b);
+
+    // Return the in stream
+    return ins;
 }
 
 void Tent::testTent() {

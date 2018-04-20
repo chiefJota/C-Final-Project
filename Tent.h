@@ -13,9 +13,9 @@ protected:
     colorStruct color;
     posStruct pos;
     int curDay = 0;
-    double curTime;
+    double curTime = 0;
     double startTime = 100;
-    std::vector<std::unique_ptr<Item>> items;
+//    std::vector<std::unique_ptr<Item>> items;
     int dayOut;
 
 
@@ -91,6 +91,21 @@ public:
      * Effects:gets the day
     */
     int getDay();
+
+    /**
+     * Requires: None
+     * Modifies: None
+     * Effects: Prints the data of the Tent to text
+    */
+    friend std::ostream& operator << (std::ostream& outs, const Tent &t);
+
+    /**
+     * Requires: None
+     * Modifies: None
+     * Effects: Reads the data of the Tent from text
+    */
+    friend std::istream& operator >> (std::istream& ins, Tent t);
+
 
     //Tester function
     void testTent();

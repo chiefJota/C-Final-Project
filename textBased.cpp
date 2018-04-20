@@ -30,17 +30,6 @@ int main() {
     // Create Tent
     Tent tent;
 
-    /// Class Testing
-    cout << "Class Testing Start:" << endl;
-    player.testFunctionality();
-    cout << "-------------------" << endl;
-    foodItem.testFoodItem();
-    cout << "-------------------" << endl;
-    waterItem.testWaterItem();
-    cout << "-------------------" << endl;
-    tent.testTent();
-    cout << "-------------------" << endl;
-
     /// File I/O
     cout << "File I/O Start:" << endl;
     // Write Data Out
@@ -63,8 +52,8 @@ int main() {
         fOut << waterItem << "\n";
         cout << waterItem << endl;
 
-//        fOut << tent << "\n";
-//        cout << tent << endl;
+        fOut << tent << "\n";
+        cout << tent << endl;
     } else {
         // Out File did not open
         return -1;
@@ -81,7 +70,7 @@ int main() {
     // Check for In File open
     if(fIn) {
         // In File opened
-        cout << "Loaded Data:" << endl;
+        cout << "\nLoaded Data:" << endl;
 
         // Write to objects
         Player player2;
@@ -93,14 +82,14 @@ int main() {
         WaterItem waterItem2;
         fIn >> waterItem2;
 
-//        Tent tent2;
-//        fIn >> tent2;
+        Tent tent2;
+        fIn >> tent2;
 
         // Print objects to console
         cout << player2 << endl;
         cout << foodItem2 << endl;
         cout << waterItem2 << endl;
-//        cout << tent2 << endl;
+        cout << tent2 << endl;
 
     } else {
         // In File did not open
@@ -109,6 +98,17 @@ int main() {
 
     // Close the In File
     fIn.close();
+
+    /// Class Testing
+    cout << "\n\nClass Testing Start:" << endl;
+    player.testFunctionality();
+    cout << "-------------------" << endl;
+    foodItem.testFoodItem();
+    cout << "-------------------" << endl;
+    waterItem.testWaterItem();
+    cout << "-------------------" << endl;
+    tent.testTent();
+    cout << "-------------------" << endl;
 
     // Exit
     return 0;
