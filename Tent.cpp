@@ -5,6 +5,11 @@ Tent::Tent() {
     pos = posStruct(10,10);
 }
 
+Tent::Tent(colorStruct color, posStruct pos) {
+    this->color = color;
+    this->pos = pos;
+}
+
 //this method is not feasible until graphics portion
 //double getItems(std::vector<std::unique_ptr<Item>> &items){
 //    sort items into food and water items, not possible till graphics portion

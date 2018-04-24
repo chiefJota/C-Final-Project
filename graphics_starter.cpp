@@ -1,19 +1,23 @@
 #include "graphics.h"
+#include "Tent.h"
 
 // IMPORTANT: Make sure the path to GLUT matches your system as I have it installed in a different directory because of how my computer is configured.
 
 // Global Graphics variables
-GLdouble width, height;
+GLdouble width = 500;
+GLdouble height = 500;
 int wd;
 
 // Global Data Variables
+Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
+Tent tent(colorStruct(0,1,0),posStruct((int)width/2,(int)height/2));
 
 // Initial Startup
 // Sets the Global Graphic variables
 void init() {
-    // Set window size
-    width = 500;
-    height = 500;
+//    // Set window size // Now done above
+//    width = 500;
+//    height = 500;
 }
 
 // Initialize OpenGL Graphics
@@ -27,7 +31,7 @@ void initGL() {
 void display() {
     // tell OpenGL to use the whole window for drawing
     glViewport(0, 0, width, height);
-    
+
     // do an orthographic parallel projection with the coordinate
     // system set to first quadrant, limited by screen/window size
     glMatrixMode(GL_PROJECTION);
@@ -41,9 +45,12 @@ void display() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // --- Draw Start
-    /*
-     * Draw here
-     */
+    // Draw Tent
+    drawSquare(tent.getColor(),tent.getPos(),40,40);
+
+    // Draw Player
+    drawPlayer(player.getColor(),player.getPos(),20,25);
+
     // --- Draw End
 
     // Render trigger
@@ -134,6 +141,9 @@ void drawSquare(colorStruct color, posStruct pos, double wdth, double lgth) {
 void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth) {
     // Draw normal square
     drawSquare(color,pos,wdth,lgth);
+
+    // Draw Head
+    drawSquare(colorStruct(0.83,0.71,0.55),pos,15,15);
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */

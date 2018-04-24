@@ -28,6 +28,13 @@ public:
     Tent();
 
     /**
+     * Requires:colorStruc posStruct
+     * Modifies:
+     * Effects:sets the color and pos structs as temporary values for testing
+    */
+    Tent(colorStruct color, posStruct pos);
+
+    /**
      * Requires:input from mouse on tent object
      * Modifies:
      * Effects:triggers moves to next day function

@@ -1,13 +1,14 @@
 # Camping Survival
 ## To-Do List
-* [ ] drawSquare method in graphics_starter (Takes color and position)
-	* [ ] drawPlayer method in graphics_starter (Takes color and position. Has 'arms'.)
-* [ ] Instantiate the Player and Tent objects in graphics_starter init method
+* [x] drawSquare method in graphics_starter (Takes color and position)
+	* [x] drawPlayer method in graphics_starter (Takes color and position. Has 'arms'.)
+* [x] Instantiate the Player and Tent objects in graphics_starter init method
 * [ ] Instantiate the Items Vector in graphics_starter init method
 * [ ] Logic to find when a new day starts
 	* [ ] Generate item objects at random locations
 	* [ ] Add generated items to Items Vector
 * [ ] Draw Player, Tent, and all Items in the Items Vector using drawPlayer and drawSquare respectively
+* [ ] Allow player to move
 * [ ] Add game states
 	* [ ] Instantiate current state in graphics_starter init method
 	* [ ] Add start screen
