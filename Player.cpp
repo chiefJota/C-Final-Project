@@ -47,11 +47,11 @@ void Player::move(moveDirection dir) {
     // Switch to direction
     switch(dir) {
         case up:
-            pos.yPos += moveAmount;
+            pos.yPos -= moveAmount;
             break;
 
         case down:
-            pos.yPos -= moveAmount;
+            pos.yPos += moveAmount;
             break;
 
         case left:

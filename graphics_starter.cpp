@@ -58,12 +58,32 @@ void display() {
 }
 
 // http://www.theasciicode.com.ar/ascii-control-characters/escape-ascii-code-27.html
-void kbd(unsigned char key, int x, int y)
-{
-    // escape
-    if (key == 27) {
-        glutDestroyWindow(wd);
-        exit(0);
+void kbd(unsigned char key, int x, int y) {
+    switch(key) {
+        // Escape
+        case 27:
+            glutDestroyWindow(wd);
+            exit(0);
+
+        // w
+        case 119:
+            player.move(up);
+            break;
+
+        // a
+        case 97:
+            player.move(left);
+            break;
+
+        // s
+        case 115:
+            player.move(down);
+            break;
+
+        // d
+        case 100:
+            player.move(right);
+            break;
     }
     
     glutPostRedisplay();
@@ -74,16 +94,16 @@ void kbd(unsigned char key, int x, int y)
 void kbdS(int key, int x, int y) {
     switch(key) {
         case GLUT_KEY_DOWN:
-            
+            player.move(down);
             break;
         case GLUT_KEY_LEFT:
-            
+            player.move(left);
             break;
         case GLUT_KEY_RIGHT:
-            
+            player.move(right);
             break;
         case GLUT_KEY_UP:
-            
+            player.move(up);
             break;
     }
     

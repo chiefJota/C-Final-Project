@@ -8,7 +8,7 @@
 	* [ ] Generate item objects at random locations
 	* [ ] Add generated items to Items Vector
 * [ ] Draw Player, Tent, and all Items in the Items Vector using drawPlayer and drawSquare respectively
-* [ ] Allow player to move
+* [x] Allow player to move
 * [ ] Add game states
 	* [ ] Instantiate current state in graphics_starter init method
 	* [ ] Add start screen
