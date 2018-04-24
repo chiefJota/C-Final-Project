@@ -1,6 +1,8 @@
 #ifndef graphics_h
 #define graphics_h
 
+#include "Player.h"
+
 #include <stdlib.h>
 #ifdef _WIN32
 #include <windows.h>
@@ -40,5 +42,19 @@ void timer(int extra);
 
 // Handle mouse button pressed and released events
 void mouse(int button, int state, int x, int y);
+
+/**
+ * Requires: ColorStruct, PosStruct
+ * Modifies: None
+ * Effects: Draws a square with the given parameters
+*/
+void drawSquare(colorStruct color, posStruct pos, double wdth, double lgth);
+
+/**
+ * Requires: ColorStruct, PosStruct
+ * Modifies: None
+ * Effects: Draws a square with arms (to denote the player) with the given parameters
+*/
+void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth);
 
 #endif /* graphics_h */

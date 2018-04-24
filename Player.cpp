@@ -8,9 +8,9 @@ colorStruct::colorStruct() {
 }
 
 colorStruct::colorStruct(double redIn, double greenIn, double blueIn) {
-    red = redIn;
-    green = greenIn;
-    blue = blueIn;
+    red = (float)redIn;
+    green = (float)greenIn;
+    blue = (float)blueIn;
 }
 
 /// Position Struct

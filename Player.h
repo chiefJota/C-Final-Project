@@ -8,9 +8,9 @@ enum moveDirection {up,down,left,right};
 
 /// Color Structure
 struct colorStruct {
-    double red;
-    double green;
-    double blue;
+    float red;
+    float green;
+    float blue;
 
     colorStruct();
     colorStruct(double redIn, double greenIn, double blueIn);

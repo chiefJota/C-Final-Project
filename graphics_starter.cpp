@@ -6,9 +6,12 @@
 GLdouble width, height;
 int wd;
 
+// Global Data Variables
+
 // Initial Startup
 // Sets the Global Graphic variables
 void init() {
+    // Set window size
     width = 500;
     height = 500;
 }
@@ -91,9 +94,9 @@ void cursor(int x, int y) {
 // button will be GLUT_LEFT_BUTTON or GLUT_RIGHT_BUTTON
 // state will be GLUT_UP or GLUT_DOWN
 void mouse(int button, int state, int x, int y) {
-    
-    
-    
+
+
+
     glutPostRedisplay();
 }
 
@@ -101,6 +104,36 @@ void timer(int extra) {
     
     glutPostRedisplay();
     glutTimerFunc(30, timer, 0);
+}
+
+// Draw Function to create a square
+void drawSquare(colorStruct color, posStruct pos, double wdth, double lgth) {
+    // Set Color
+    glColor3f(color.red, color.green, color.blue);
+
+    // Begin Draw
+    glBegin(GL_QUADS);
+
+    // Top Left
+    glVertex2i(pos.xPos-(wdth/2.0), pos.yPos-(lgth/2.0));
+
+    // Top Right
+    glVertex2i(pos.xPos+(wdth/2.0), pos.yPos-(lgth/2.0));
+
+    // Bottom Right
+    glVertex2i(pos.xPos+(wdth/2.0), pos.yPos+(lgth/2.0));
+
+    // Bottom Left
+    glVertex2i(pos.xPos-(wdth/2.0), pos.yPos+(lgth/2.0));
+
+    // End Draw
+    glEnd();
+}
+
+// Draw Function to create player squares
+void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth) {
+    // Draw normal square
+    drawSquare(color,pos,wdth,lgth);
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */
