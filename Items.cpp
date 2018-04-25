@@ -13,7 +13,7 @@ Item::Item() {
 
 //non default constructor
 Item::Item(std::string &name, colorStruct color, posStruct pos) {
-    name = " ";
+    this->name = name;
     this->color = color;
     this->pos = pos;
 }
