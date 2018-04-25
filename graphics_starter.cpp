@@ -34,7 +34,7 @@ void init() {
 // Initialize OpenGL Graphics
 void initGL() {
     // Set "clearing" or background color
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.3f, 0.5f, 0.4f, 0.0f);
 }
 
 // Handler for window-repaint event. Call back when the window first appears and
@@ -198,8 +198,8 @@ void drawItems(){
         //manipulate output to display nicely
         colorStruct color = ItemsList[i]->getColor();
         posStruct pos = ItemsList[i]->getPosition();
-        double wdth = 4;
-        double lgth = 4;
+        double wdth = 8;
+        double lgth = 8;
         //draw em
         drawSquare(color,pos,wdth,lgth);
     }

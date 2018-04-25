@@ -30,7 +30,7 @@ public:
      * Effects: template for subclasses
      * FoodItem and WaterItem
     */
-    Item(std::string &name, colorStruct color, posStruct pos);
+    Item(std::string name, colorStruct color, posStruct pos);
 
     /**
      * getters which are
@@ -85,7 +85,7 @@ public:
     * Effects: sets name, color, and spawning
      * position of the food item
    */
-    FoodItem(std::string &name, colorStruct color, posStruct pos);
+    FoodItem(std::string name, colorStruct color, posStruct pos);
 
     /**
      * Requires: Nothing
@@ -192,7 +192,7 @@ public:
     * Effects: sets name, color, and spawning
     * position of the Water item
     */
-    WaterItem(std::string &name, colorStruct color, posStruct pos);
+    WaterItem(std::string name, colorStruct color, posStruct pos);
 
     /**
     * Requires: Nothing
