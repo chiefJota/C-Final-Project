@@ -56,7 +56,7 @@ void display() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // Check for new day
-    if(curDay != tent.get) {
+    if(curDay != tent.getDay()) {
 
         //Populates vector of items with FoodItems
         ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(150,200)));
@@ -67,9 +67,6 @@ void display() {
         ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(10,350)));
         ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.0,1.0),posStruct(91,71)));
         ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.0,1.0),posStruct(60,9)));
-
-        //curDay increased by one to equal tent.get
-        curDay+1;
     }
 
     // --- Draw Start
@@ -79,7 +76,8 @@ void display() {
     // Draw Player
     drawPlayer(player.getColor(),player.getPos(),20,25);
 
-    // --- Draw End
+    // --- Draw Items
+    drawItems();
 
     // Render trigger
     glFlush();
@@ -113,9 +111,9 @@ void kbd(unsigned char key, int x, int y) {
             player.move(right);
             break;
     }
-    
+
     glutPostRedisplay();
-    
+
     return;
 }
 
@@ -134,15 +132,15 @@ void kbdS(int key, int x, int y) {
             player.move(up);
             break;
     }
-    
+
     glutPostRedisplay();
-    
+
     return;
 }
 
 void cursor(int x, int y) {
-    
-    
+
+
     glutPostRedisplay();
 }
 
@@ -156,7 +154,7 @@ void mouse(int button, int state, int x, int y) {
 }
 
 void timer(int extra) {
-    
+
     glutPostRedisplay();
     glutTimerFunc(30, timer, 0);
 }
@@ -194,6 +192,18 @@ void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth) {
     drawSquare(colorStruct(0.83,0.71,0.55),pos,15,15);
 }
 
+void drawItems(){
+    //draw items
+    for(int i=0; i < ItemsList.size(); i++){
+        //manipulate output to display nicely
+        colorStruct color = ItemsList[i]->getColor();
+        posStruct pos = ItemsList[i]->getPosition();
+        double wdth = 4;
+        double lgth = 4;
+        //draw em
+        drawSquare(color,pos,wdth,lgth);
+    }
+}
 /* Main function: GLUT runs as a console application starting at main()  */
 int main(int argc, char** argv) {
     
