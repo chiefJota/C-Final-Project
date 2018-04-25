@@ -12,7 +12,7 @@ Item::Item() {
 }
 
 //non default constructor
-Item::Item(std::string &name, colorStruct color, posStruct pos) {
+Item::Item(std::string name, colorStruct color, posStruct pos) {
     this->name = name;
     this->color = color;
     this->pos = pos;
@@ -44,7 +44,7 @@ FoodItem::FoodItem(){
 }
 
 //non default constructor for FoodItem
-FoodItem::FoodItem(std::string &n, colorStruct color, posStruct pos) {
+FoodItem::FoodItem(std::string n, colorStruct color, posStruct pos) {
     name = n;
     this->color = color;
     this->pos = pos;
@@ -201,7 +201,7 @@ WaterItem::WaterItem(){
 }
 
 //no default constructor for WaterItem
-WaterItem::WaterItem(std::string &n, colorStruct color, posStruct pos) {
+WaterItem::WaterItem(std::string n, colorStruct color, posStruct pos) {
     name = n;
     this->color = color;
     this->pos = pos;

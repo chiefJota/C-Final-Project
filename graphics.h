@@ -57,4 +57,6 @@ void drawSquare(colorStruct color, posStruct pos, double wdth, double lgth);
 */
 void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth);
 
+void drawItems();
+
 #endif /* graphics_h */
