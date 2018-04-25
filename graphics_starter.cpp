@@ -1,5 +1,10 @@
+#include <vector>
+#include <string>
+#include "Items.h"
 #include "graphics.h"
 #include "Tent.h"
+
+
 
 // IMPORTANT: Make sure the path to GLUT matches your system as I have it installed in a different directory because of how my computer is configured.
 
@@ -7,10 +12,13 @@
 GLdouble width = 500;
 GLdouble height = 500;
 int wd;
+std::vector<std::unique_ptr<Item>> ItemsList;
+
 
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
 Tent tent(colorStruct(0,1,0),posStruct((int)width/2,(int)height/2));
+int curDay;
 
 // Initial Startup
 // Sets the Global Graphic variables
@@ -18,6 +26,9 @@ void init() {
 //    // Set window size // Now done above
 //    width = 500;
 //    height = 500;
+
+    // Set Day listener
+    curDay = tent.getDay()-1;
 }
 
 // Initialize OpenGL Graphics
@@ -43,6 +54,20 @@ void display() {
 
     // Chooses the drawing mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    // Check for new day
+    if(curDay != tent.getDay()) {
+
+        //Populates vector of items with FoodItems
+        ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(150,200)));
+        ItemsList.push_back(std::make_unique<FoodItem>("Rocks", colorStruct(0.0,0.06,0.46),posStruct(50,100)));
+        ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83,0.71,0.55),posStruct(25,95)));
+
+        //Populates vector of items with WaterItems
+        ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(10,350)));
+        ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.0,1.0),posStruct(91,71)));
+        ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.0,1.0),posStruct(60,9)));
+    }
 
     // --- Draw Start
     // Draw Tent

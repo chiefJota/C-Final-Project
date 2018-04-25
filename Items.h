@@ -2,6 +2,11 @@
 #define CAMPINGSURVIVAL_ITEMS_H
 
 #include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <istream>
+#include <vector>
+#include <regex>
 #include "Player.h"
 
 class Item {
