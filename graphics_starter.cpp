@@ -56,7 +56,7 @@ void display() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // Check for new day
-    if(curDay != tent.getDay()) {
+    if(curDay != tent.get) {
 
         //Populates vector of items with FoodItems
         ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(150,200)));
@@ -67,6 +67,9 @@ void display() {
         ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(10,350)));
         ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.0,1.0),posStruct(91,71)));
         ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.0,1.0),posStruct(60,9)));
+
+        //curDay increased by one to equal tent.get
+        curDay+1;
     }
 
     // --- Draw Start

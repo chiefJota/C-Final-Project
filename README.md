@@ -3,7 +3,7 @@
 * [x] drawSquare method in graphics_starter (Takes color and position)
 	* [x] drawPlayer method in graphics_starter (Takes color and position. Has 'arms'.)
 * [x] Instantiate the Player and Tent objects in graphics_starter init method
-* [ ] Instantiate the Items Vector in graphics_starter init method
+* [x] Instantiate the Items Vector in graphics_starter init method
 * [ ] Logic to find when a new day starts
 	* [ ] Generate item objects at random locations
 	* [ ] Add generated items to Items Vector

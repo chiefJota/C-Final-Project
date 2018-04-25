@@ -24,6 +24,8 @@ void Tent::goToNextDay() {
     curDay++;
     //set new starting point to countdown from
     startTime = startTime - (curDay * 10);
+
+
 }
 
 int Tent::getDay(){
