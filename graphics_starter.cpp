@@ -102,6 +102,22 @@ void display() {
     // Chooses the drawing mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+    // Check if trip mode is enabled
+    if(tripMode) {
+        // Enable blending
+        glEnable(GL_BLEND);
+
+        // Choose random
+        if(rand()%2) {
+            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+        } else {
+            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+        }
+    } else {
+        // Disable blending
+        glDisable(GL_BLEND);
+    }
+
     // Check if all items non-poison items are collected
     bool foundItem = false;
     for(std::unique_ptr<Item> &item : ItemsList) {
