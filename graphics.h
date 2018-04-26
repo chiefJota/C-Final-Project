@@ -65,6 +65,8 @@ bool isTouchingItem(const posStruct &toucher, const posStruct &item);
 
 bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, const posStruct &b, double bWidth, double bHeight);
 
+void drawText_Center(const std::string &text, int textX, int textY);
+
 bool saveGame(const std::string &fileName);
 
 bool loadGame(const std::string &fileName);

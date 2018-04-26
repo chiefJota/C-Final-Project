@@ -21,8 +21,10 @@ double itemWidth = 8;
 double itemHeight = 8;
 double playerWidth = 20;
 double playerHeight = 25;
+double tentWidth = 40;
+double tentHeight = 40;
 bool showAlert = false;
-string alertText = "";
+string alertText;
 
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
@@ -44,6 +46,9 @@ void init() {
     collectedAllItems = false;
     dayIsOver = false;
     tripMode = false;
+
+    // Set Alert
+    alertText = " ";
 
     // Set Save File
     saveFileName = "hikeSave.txt";
@@ -128,7 +133,7 @@ void display() {
 
     // --- Draw Start
     // Draw Tent
-    drawSquare(tent.getColor(),tent.getPos(),40,40);
+    drawSquare(tent.getColor(),tent.getPos(),tentWidth,tentHeight);
 
     // Draw Player
     drawPlayer(player.getColor(),player.getPos(),playerWidth,playerHeight);
@@ -143,50 +148,10 @@ void display() {
             // Check if mushroom
             if(item->isMushroom()) {
                 // Overlapped
-                // Display String
-                std::string message = "Poisoned!";
-                glColor3f(1,0,0);
-
-                // Set Position
-                GLint txtX = item->getPosition().xPos-45;
-                GLint txtY = item->getPosition().yPos-itemHeight;
-                if(txtX < 10) {
-                    // Outside on left
-                    txtX = 0;
-                }
-                if(txtY < 25) {
-                    // Outside on top
-                    txtY = 25;
-                }
-                glRasterPos2i(txtX,txtY);
-
-                // Draw String
-                for (char c : message) {
-                    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
-                }
+                drawText_Center("Poison",item->getPosition().xPos,item->getPosition().yPos);
             } else {
                 // Overlapped
-                // Display String
-                std::string message = item->getItem();
-                glColor3f(1,0,0);
-
-                // Set Position
-                GLint txtX = item->getPosition().xPos-getTextCenter(GLUT_BITMAP_TIMES_ROMAN_24,message);
-                GLint txtY = item->getPosition().yPos-itemHeight;
-                if(txtX < 10) {
-                    // Outside on left
-                    txtX = 0;
-                }
-                if(txtY < 25) {
-                    // Outside on top
-                    txtY = 25;
-                }
-                glRasterPos2i(txtX,txtY);
-
-                // Draw String
-                for (char c : message) {
-                    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
-                }
+                drawText_Center(item->getItem(),item->getPosition().xPos,item->getPosition().yPos);
             }
         }
     }
@@ -298,29 +263,42 @@ void kbd(unsigned char key, int x, int y) {
 
         // e
         case 101:
-            // Collect Item
-            // Loop through all items
-            int index = 0;
-            for(std::unique_ptr<Item> &item : ItemsList) {
-                // Check for collision with item
-                if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,item->getPosition(),itemWidth,itemHeight)) {
-                    // Touching
-                    // Check if mushroom or regular item
-                    if(item->isMushroom()) {
-                        // Mushroom Item
-                        // Enable trip mode
-                        tripMode = true;
+            // Check if touching tent
+            if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,tent.getPos(),tentWidth,tentHeight)) {
+                // Check if player can go to next day
+                if(collectedAllItems) {
+                    // Next day
+                    // Go to next day
+                    dayIsOver = true;
+                } else {
+                    // Can't go to next day
+                    triggerAlert("There are more items out there!");
+                }
+            } else {
+                // Collect Item
+                // Loop through all items
+                int index = 0;
+                for (std::unique_ptr<Item> &item : ItemsList) {
+                    // Check for collision with item
+                    if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,item->getPosition(),itemWidth,itemHeight)) {
+                        // Touching
+                        // Check if mushroom or regular item
+                        if(item->isMushroom()) {
+                            // Mushroom Item
+                            // Enable trip mode
+                            tripMode = true;
+                        }
+
+                        // Remove item from the list
+                        ItemsList.erase(std::remove(ItemsList.begin(),ItemsList.end(),item),ItemsList.end());
+
+                        // Break the loop
+                        break;
                     }
 
-                    // Remove item from the list
-                    ItemsList.erase(std::remove(ItemsList.begin(),ItemsList.end(),item),ItemsList.end());
-
-                    // Break the loop
-                    break;
+                    // Iterate
+                    index++;
                 }
-
-                // Iterate
-                index++;
             }
             break;
     }
@@ -506,6 +484,41 @@ bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, con
              a.xPos+(aWidth/2.0) < b.xPos-(bWidth/2.0) ||
              b.yPos-(bHeight/2.0) > a.yPos+(aHeight/2.0) ||
              a.yPos-(aHeight/2.0) > b.yPos+(bHeight/2.0));
+}
+
+void drawText_Center(const string &text, int textX, int textY) {
+    // Variable
+    auto font = GLUT_BITMAP_TIMES_ROMAN_24;
+
+    // Display String
+    std::string message = text;
+    glColor3f(1,0,0);
+
+    // Set Position
+    GLint txtX = textX-getTextCenter(font,message);
+    GLint txtY = textY-itemHeight;
+    if(txtX < 10) {
+        // Outside on left
+        txtX = 0;
+    }
+    GLint textLength = 0;
+    for(char c : text) {
+        textLength += glutBitmapWidth(font,c);
+    }
+    if(txtX > width-(textLength+1)) {
+        // Outside on right
+        txtX = width-textLength;
+    }
+    if(txtY < 25) {
+        // Outside on top
+        txtY = 25;
+    }
+    glRasterPos2i(txtX,txtY);
+
+    // Draw String
+    for (char c : message) {
+        glutBitmapCharacter(font,c);
+    }
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */
