@@ -1,7 +1,6 @@
 #include <vector>
 #include <ctime>
 #include <regex>
-#include <string>
 #include <fstream>
 #include "Items.h"
 #include "graphics.h"
@@ -61,9 +60,6 @@ void init() {
         //resize the vector of items
         //ItemsList.resize(6);
         std::vector<int> randNums = {rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height};
-        for (int i= 0; i < randNums.size(); ++i) {
-            std::cout << randNums[i] << std::endl;
-        }
 
         //Populates vector of items with FoodItems and the position is random
         ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(randNums[0],randNums[1])));
@@ -73,7 +69,7 @@ void init() {
         //Populates vector of items with WaterItems
         ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(randNums[6],randNums[7])));
         ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.3,0.8),posStruct(randNums[8],randNums[9])));
-        ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.1,0.95),posStruct(randNums[10],randNums[11])));
+        ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.1,0.95),posStruct(randNums[10],randNums[11])));W
     }
 }
 
