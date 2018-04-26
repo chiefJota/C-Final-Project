@@ -13,7 +13,10 @@ GLdouble width = 500;
 GLdouble height = 500;
 int wd;
 std::vector<std::unique_ptr<Item>> ItemsList;
-
+int mouseX;
+int mouseY;
+double itemWidth = 8;
+double itemHeight = 8;
 
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
@@ -79,6 +82,39 @@ void display() {
     // --- Draw Items
     drawItems();
 
+    // Check for overlap with Items
+    for(std::unique_ptr<Item> &item : ItemsList) {
+        // Check if mushroom
+        if(item->isMushroom()) {
+            // Check position
+            if(isTouchingItem(posStruct(mouseX,mouseY),item->getPosition())) {
+                // Overlapped
+                // Display String
+                std::string message = "Poisoned!";
+                glColor3f(1,0,0);
+
+                // Set Position
+                GLint txtX = item->getPosition().xPos-45;
+                GLint txtY = item->getPosition().yPos-itemHeight;
+                std::cout << "(" << txtX << "," << txtY << ")" << std::endl;
+                if(txtX < 10) {
+                    // Outside on left
+                    txtX = 0;
+                }
+                if(txtY < 25) {
+                    // Outside on top
+                    txtY = 25;
+                }
+                glRasterPos2i(txtX,txtY);
+
+                // Draw String
+                for (char c : message) {
+                    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
+                }
+            }
+        }
+    }
+
     // Render trigger
     glFlush();
 }
@@ -139,7 +175,9 @@ void kbdS(int key, int x, int y) {
 }
 
 void cursor(int x, int y) {
-
+    // Set mouse pos
+    mouseX = x;
+    mouseY = y;
 
     glutPostRedisplay();
 }
@@ -147,8 +185,6 @@ void cursor(int x, int y) {
 // button will be GLUT_LEFT_BUTTON or GLUT_RIGHT_BUTTON
 // state will be GLUT_UP or GLUT_DOWN
 void mouse(int button, int state, int x, int y) {
-
-
 
     glutPostRedisplay();
 }
@@ -198,17 +234,25 @@ void drawItems(){
         //manipulate output to display nicely
         colorStruct color = ItemsList[i]->getColor();
         posStruct pos = ItemsList[i]->getPosition();
-        double wdth = 8;
-        double lgth = 8;
+
         //draw em
-        drawSquare(color,pos,wdth,lgth);
+        drawSquare(color,pos,itemWidth,itemHeight);
     }
 }
+
+// Checks to see if Point A is inside the bounds of Point B
+bool isTouchingItem(const posStruct &pointA, const posStruct &pointB) {
+    return (pointA.xPos >= pointB.xPos-(itemWidth/2.0) && // left side
+            pointA.xPos <= pointB.xPos+(itemWidth/2.0) && // right side
+            pointA.yPos >= pointB.yPos-(itemHeight/2.0) && // top
+            pointA.yPos <= pointB.yPos+(itemHeight/2.0)); // bottom
+}
+
 /* Main function: GLUT runs as a console application starting at main()  */
 int main(int argc, char** argv) {
     
     init();
-    
+
     glutInit(&argc, argv);          // Initialize GLUT
     
     glutInitDisplayMode(GLUT_RGBA);

@@ -59,4 +59,6 @@ void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth);
 
 void drawItems();
 
+bool isTouchingItem(const posStruct &pointA, const posStruct &pointB);
+
 #endif /* graphics_h */

@@ -32,6 +32,7 @@ private:
     colorStruct color;
     double foodLevel;
     double waterLevel;
+    bool isPoisoned;
 
 public:
     // Constructor
@@ -81,6 +82,13 @@ public:
     */
     double getWaterLevel() const;
 
+    /**
+     * Requires: None
+     * Modifies: None
+     * Effects: Gets the isPoisoned bool
+    */
+    double getIsPoisoned() const;
+
     // Setters
     /**
      * Requires: Change amount
@@ -109,6 +117,13 @@ public:
      * Effects: Sets the water level to the level supplied
     */
     void setWaterLevel(double level);
+
+    /**
+     * Requires: Bool
+     * Modifies: isPoisoned
+     * Effects: Sets the isPoisoned bool
+    */
+    void setIsPoisoned(bool isP);
 
     /**
      * Requires: None
