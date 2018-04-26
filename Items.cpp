@@ -4,8 +4,6 @@
 
 #include "Items.h"
 
-#include <regex>
-
 //default constructor
 Item::Item() {
 

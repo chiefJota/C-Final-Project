@@ -7,6 +7,7 @@
 #include <istream>
 #include <vector>
 #include <regex>
+#include <ctime>
 #include "Player.h"
 
 class Item {
