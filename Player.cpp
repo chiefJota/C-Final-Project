@@ -31,12 +31,16 @@ Player::Player() {
     pos = posStruct();
     foodLevel = 0;
     waterLevel = 0;
+    isPoisoned = false;
 }
 
 Player::Player(colorStruct color, posStruct pos) : color(color), pos(pos) {
     // Set Food and Water
     foodLevel = 100;
     waterLevel = 100;
+
+    // Set Poison
+    isPoisoned = false;
 }
 
 // Methods
@@ -81,6 +85,10 @@ double Player::getWaterLevel() const {
     return waterLevel;
 }
 
+double Player::getIsPoisoned() const {
+    return isPoisoned;
+}
+
 // Setters
 void Player::changeFoodLevel(double change) {
     foodLevel += change;
@@ -97,6 +105,11 @@ void Player::setFoodLevel(double level) {
 void Player::setWaterLevel(double level) {
     waterLevel = level;
 }
+
+void Player::setIsPoisoned(bool isP) {
+    isPoisoned = isP;
+}
+
 
 // Testing Method
 void Player::testFunctionality() {
