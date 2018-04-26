@@ -28,6 +28,7 @@ string alertText = "";
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
 Tent tent(colorStruct(0,1,0),posStruct((int)width/2,(int)height/2));
 int curDay;
+string saveFileName;
 
 // Initial Startup
 // Sets the Global Graphic variables
@@ -35,6 +36,9 @@ void init() {
 //    // Set window size // Now done above
 //    width = 500;
 //    height = 500;
+
+    // Set Save File
+    saveFileName = "hikeSave.txt";
 
     // Set Day listener
     curDay = tent.getDay()-1;
@@ -102,10 +106,10 @@ void display() {
 
     // Check for overlap with Items
     for(std::unique_ptr<Item> &item : ItemsList) {
-        // Check if mushroom
-        if(item->isMushroom()) {
-            // Check position
-            if(isTouchingItem(posStruct(mouseX,mouseY),item->getPosition())) {
+        // Check position
+        if(isTouchingItem(posStruct(mouseX,mouseY),item->getPosition())) {
+            // Check if mushroom
+            if(item->isMushroom()) {
                 // Overlapped
                 // Display String
                 std::string message = "Poisoned!";
@@ -114,7 +118,29 @@ void display() {
                 // Set Position
                 GLint txtX = item->getPosition().xPos-45;
                 GLint txtY = item->getPosition().yPos-itemHeight;
-                std::cout << "(" << txtX << "," << txtY << ")" << std::endl;
+                if(txtX < 10) {
+                    // Outside on left
+                    txtX = 0;
+                }
+                if(txtY < 25) {
+                    // Outside on top
+                    txtY = 25;
+                }
+                glRasterPos2i(txtX,txtY);
+
+                // Draw String
+                for (char c : message) {
+                    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
+                }
+            } else {
+                // Overlapped
+                // Display String
+                std::string message = item->getItem();
+                glColor3f(1,0,0);
+
+                // Set Position
+                GLint txtX = item->getPosition().xPos-getTextCenter(GLUT_BITMAP_TIMES_ROMAN_24,message);
+                GLint txtY = item->getPosition().yPos-itemHeight;
                 if(txtX < 10) {
                     // Outside on left
                     txtX = 0;
@@ -148,7 +174,7 @@ void kbd(unsigned char key, int x, int y) {
         // Escape
         case 27:
             // Save Game
-            if(!saveGame("hikeSave.sav")) {
+            if(!saveGame(saveFileName)) {
                 // Save Failed
                 triggerAlert("Failed to save data please try again.");
             } else {
@@ -160,13 +186,24 @@ void kbd(unsigned char key, int x, int y) {
             exit(0);
 
         // t
-        case 84:
+        case 116:
             // Save Game
-            if(!saveGame("hikeSave.sav")) {
+            if(!saveGame(saveFileName)) {
                 // Save Failed
                 triggerAlert("Failed to save data please try again.");
             } else {
                 triggerAlert("Saved the game.");
+            }
+            break;
+
+        // y
+        case 121:
+            // Load Game
+            if(!loadGame(saveFileName)) {
+                // Load Failed
+                triggerAlert("Failed to load data please try again.");
+            } else {
+                triggerAlert("Loaded your save.");
             }
             break;
 
@@ -296,17 +333,21 @@ void drawAlert() {
     glColor3f(1,1,1);
 
     // Get Center
-    GLint textCenter = 0;
-    for(char c : alertText) {
-        textCenter += glutBitmapWidth(GLUT_BITMAP_TIMES_ROMAN_24,c);
-    }
-    textCenter = (width/2)-(textCenter/2)-4;
+    GLint textCenter = (width/2)-getTextCenter(GLUT_BITMAP_TIMES_ROMAN_24,alertText);
 
     // Draw
     glRasterPos2i(textCenter,36);
     for (char c : alertText) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
     }
+}
+
+GLint getTextCenter(void* font, const std::string &text) {
+    GLint textCenter = 0;
+    for(char c : text) {
+        textCenter += glutBitmapWidth(font,c);
+    }
+    return (textCenter/2);
 }
 
 // Checks to see if Point A is inside the bounds of Point B

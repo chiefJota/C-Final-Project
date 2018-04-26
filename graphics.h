@@ -69,4 +69,6 @@ void triggerAlert(const std::string &text);
 
 void drawAlert();
 
+GLint getTextCenter(void* font, const std::string &text);
+
 #endif /* graphics_h */
