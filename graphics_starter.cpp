@@ -20,14 +20,19 @@ int mouseX;
 int mouseY;
 double itemWidth = 8;
 double itemHeight = 8;
+double playerWidth = 20;
+double playerHeight = 25;
 bool showAlert = false;
 string alertText = "";
-
 
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
 Tent tent(colorStruct(0,1,0),posStruct((int)width/2,(int)height/2));
 int curDay;
+string saveFileName;
+bool collectedAllItems;
+bool dayIsOver;
+bool tripMode;
 
 // Initial Startup
 // Sets the Global Graphic variables
@@ -35,6 +40,14 @@ void init() {
 //    // Set window size // Now done above
 //    width = 500;
 //    height = 500;
+
+    // Set day handlers
+    collectedAllItems = false;
+    dayIsOver = false;
+    tripMode = false;
+
+    // Set Save File
+    saveFileName = "hikeSave.txt";
 
     // Set Day listener
     curDay = tent.getDay()-1;
@@ -89,23 +102,51 @@ void display() {
     // Chooses the drawing mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+    // Check if all items non-poison items are collected
+    bool foundItem = false;
+    for(std::unique_ptr<Item> &item : ItemsList) {
+        // Check if it's a mushroom (poisoned)
+        if(!item->isMushroom()) {
+            // Not a mushroom, So non-mushroom items are still in play
+            foundItem = true;
+        }
+    }
+
+    // Check if non-poison items exist
+    if(!foundItem) {
+        // No items were found, all items collected
+        collectedAllItems = true;
+        triggerAlert("All items collected!");
+    }
+
+    // Check for the day being over
+    if(collectedAllItems && dayIsOver) {
+        // Day is over, Go to new day
+        // Turn off trip mode
+        tripMode = false;
+
+        // TODO: Continue to next day
+    } else if(dayIsOver) {
+        // Day is over, Not all items collected
+        // TODO: Game over screen because day ended before all items collected
+    }
 
     // --- Draw Start
     // Draw Tent
     drawSquare(tent.getColor(),tent.getPos(),40,40);
 
     // Draw Player
-    drawPlayer(player.getColor(),player.getPos(),20,25);
+    drawPlayer(player.getColor(),player.getPos(),playerWidth,playerHeight);
 
     // --- Draw Items
     drawItems();
 
     // Check for overlap with Items
     for(std::unique_ptr<Item> &item : ItemsList) {
-        // Check if mushroom
-        if(item->isMushroom()) {
-            // Check position
-            if(isTouchingItem(posStruct(mouseX,mouseY),item->getPosition())) {
+        // Check position
+        if(isTouchingItem(posStruct(mouseX,mouseY),item->getPosition())) {
+            // Check if mushroom
+            if(item->isMushroom()) {
                 // Overlapped
                 // Display String
                 std::string message = "Poisoned!";
@@ -114,7 +155,29 @@ void display() {
                 // Set Position
                 GLint txtX = item->getPosition().xPos-45;
                 GLint txtY = item->getPosition().yPos-itemHeight;
-                std::cout << "(" << txtX << "," << txtY << ")" << std::endl;
+                if(txtX < 10) {
+                    // Outside on left
+                    txtX = 0;
+                }
+                if(txtY < 25) {
+                    // Outside on top
+                    txtY = 25;
+                }
+                glRasterPos2i(txtX,txtY);
+
+                // Draw String
+                for (char c : message) {
+                    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
+                }
+            } else {
+                // Overlapped
+                // Display String
+                std::string message = item->getItem();
+                glColor3f(1,0,0);
+
+                // Set Position
+                GLint txtX = item->getPosition().xPos-getTextCenter(GLUT_BITMAP_TIMES_ROMAN_24,message);
+                GLint txtY = item->getPosition().yPos-itemHeight;
                 if(txtX < 10) {
                     // Outside on left
                     txtX = 0;
@@ -136,6 +199,7 @@ void display() {
     // Draw Alert Text
     if(showAlert) {
         drawAlert();
+        alertTimer(0);
     }
 
     // Render trigger
@@ -148,7 +212,7 @@ void kbd(unsigned char key, int x, int y) {
         // Escape
         case 27:
             // Save Game
-            if(!saveGame("hikeSave.sav")) {
+            if(!saveGame(saveFileName)) {
                 // Save Failed
                 triggerAlert("Failed to save data please try again.");
             } else {
@@ -160,9 +224,9 @@ void kbd(unsigned char key, int x, int y) {
             exit(0);
 
         // t
-        case 84:
+        case 116:
             // Save Game
-            if(!saveGame("hikeSave.sav")) {
+            if(!saveGame(saveFileName)) {
                 // Save Failed
                 triggerAlert("Failed to save data please try again.");
             } else {
@@ -170,24 +234,99 @@ void kbd(unsigned char key, int x, int y) {
             }
             break;
 
+        // y
+        case 121:
+            // Load Game
+            if(!loadGame(saveFileName)) {
+                // Load Failed
+                triggerAlert("Failed to load data please try again.");
+            } else {
+                triggerAlert("Loaded your save.");
+            }
+            break;
+
         // w
         case 119:
-            player.move(moveDirection::up);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::up);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::down);
+            }
             break;
 
         // a
         case 97:
-            player.move(moveDirection::left);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::left);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::right);
+            }
             break;
 
         // s
         case 115:
-            player.move(moveDirection::down);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::down);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::up);
+            }
             break;
 
         // d
         case 100:
-            player.move(moveDirection::right);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::right);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::left);
+            }
+            break;
+
+        // e
+        case 101:
+            // Collect Item
+            // Loop through all items
+            int index = 0;
+            for(std::unique_ptr<Item> &item : ItemsList) {
+                // Check for collision with item
+                if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,item->getPosition(),itemWidth,itemHeight)) {
+                    // Touching
+                    // Check if mushroom or regular item
+                    if(item->isMushroom()) {
+                        // Mushroom Item
+                        // Enable trip mode
+                        tripMode = true;
+                    }
+
+                    // Remove item from the list
+                    ItemsList.erase(std::remove(ItemsList.begin(),ItemsList.end(),item),ItemsList.end());
+
+                    // Break the loop
+                    break;
+                }
+
+                // Iterate
+                index++;
+            }
             break;
     }
 
@@ -199,16 +338,52 @@ void kbd(unsigned char key, int x, int y) {
 void kbdS(int key, int x, int y) {
     switch(key) {
         case GLUT_KEY_DOWN:
-            player.move(moveDirection::down);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::down);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::up);
+            }
             break;
         case GLUT_KEY_LEFT:
-            player.move(moveDirection::left);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::left);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::right);
+            }
             break;
         case GLUT_KEY_RIGHT:
-            player.move(moveDirection::right);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::right);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::left);
+            }
             break;
         case GLUT_KEY_UP:
-            player.move(moveDirection::up);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::down);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::up);
+            }
             break;
     }
 
@@ -236,6 +411,11 @@ void timer(int extra) {
 
     glutPostRedisplay();
     glutTimerFunc(30, timer, 0);
+}
+
+void alertTimer(int extra) {
+    glutPostRedisplay();
+    glutTimerFunc(680, hideAlert, 0);
 }
 
 // Draw Function to create a square
@@ -296,11 +476,7 @@ void drawAlert() {
     glColor3f(1,1,1);
 
     // Get Center
-    GLint textCenter = 0;
-    for(char c : alertText) {
-        textCenter += glutBitmapWidth(GLUT_BITMAP_TIMES_ROMAN_24,c);
-    }
-    textCenter = (width/2)-(textCenter/2)-4;
+    GLint textCenter = (width/2)-getTextCenter(GLUT_BITMAP_TIMES_ROMAN_24,alertText);
 
     // Draw
     glRasterPos2i(textCenter,36);
@@ -309,12 +485,32 @@ void drawAlert() {
     }
 }
 
+void hideAlert(int num) {
+    showAlert = false;
+}
+
+GLint getTextCenter(void* font, const std::string &text) {
+    GLint textCenter = 0;
+    for(char c : text) {
+        textCenter += glutBitmapWidth(font,c);
+    }
+    return (textCenter/2);
+}
+
 // Checks to see if Point A is inside the bounds of Point B
-bool isTouchingItem(const posStruct &pointA, const posStruct &pointB) {
-    return (pointA.xPos >= pointB.xPos-(itemWidth/2.0) && // left side
-            pointA.xPos <= pointB.xPos+(itemWidth/2.0) && // right side
-            pointA.yPos >= pointB.yPos-(itemHeight/2.0) && // top
-            pointA.yPos <= pointB.yPos+(itemHeight/2.0)); // bottom
+bool isTouchingItem(const posStruct &toucher, const posStruct &item) {
+    return (toucher.xPos >= item.xPos-(itemWidth/2.0) && // Left side
+            toucher.xPos <= item.xPos+(itemWidth/2.0) && // Right side
+            toucher.yPos >= item.yPos-(itemHeight/2.0) && // Top
+            toucher.yPos <= item.yPos+(itemHeight/2.0)); // Bottom
+}
+
+// Checks to see if two defined shapes ('a' and 'b') are touching within any of their bounds
+bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, const posStruct &b, double bWidth, double bHeight) {
+    return !(b.xPos+(bWidth/2.0) < a.xPos-(aWidth/2.0) ||
+             a.xPos+(aWidth/2.0) < b.xPos-(bWidth/2.0) ||
+             b.yPos-(bHeight/2.0) > a.yPos+(aHeight/2.0) ||
+             a.yPos-(aHeight/2.0) > b.yPos+(bHeight/2.0));
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */

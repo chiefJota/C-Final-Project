@@ -40,6 +40,8 @@ void cursor(int x, int y);
 // Calls itself after a specified time
 void timer(int extra);
 
+void alertTimer(int extra);
+
 // Handle mouse button pressed and released events
 void mouse(int button, int state, int x, int y);
 
@@ -59,7 +61,9 @@ void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth);
 
 void drawItems();
 
-bool isTouchingItem(const posStruct &pointA, const posStruct &pointB);
+bool isTouchingItem(const posStruct &toucher, const posStruct &item);
+
+bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, const posStruct &b, double bWidth, double bHeight);
 
 bool saveGame(const std::string &fileName);
 
@@ -68,5 +72,9 @@ bool loadGame(const std::string &fileName);
 void triggerAlert(const std::string &text);
 
 void drawAlert();
+
+void hideAlert(int num);
+
+GLint getTextCenter(void* font, const std::string &text);
 
 #endif /* graphics_h */
