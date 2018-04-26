@@ -22,6 +22,8 @@ double itemWidth = 8;
 double itemHeight = 8;
 double playerWidth = 20;
 double playerHeight = 25;
+double tentWidth = 40;
+double tentHeight = 40;
 bool showAlert = false;
 string alertText;
 
@@ -135,7 +137,7 @@ void display() {
 
     // --- Draw Start
     // Draw Tent
-    drawSquare(tent.getColor(),tent.getPos(),40,40);
+    drawSquare(tent.getColor(),tent.getPos(),tentWidth,tentHeight);
 
     // Draw Player
     drawPlayer(player.getColor(),player.getPos(),playerWidth,playerHeight);
@@ -265,29 +267,42 @@ void kbd(unsigned char key, int x, int y) {
 
         // e
         case 101:
-            // Collect Item
-            // Loop through all items
-            int index = 0;
-            for(std::unique_ptr<Item> &item : ItemsList) {
-                // Check for collision with item
-                if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,item->getPosition(),itemWidth,itemHeight)) {
-                    // Touching
-                    // Check if mushroom or regular item
-                    if(item->isMushroom()) {
-                        // Mushroom Item
-                        // Enable trip mode
-                        tripMode = true;
+            // Check if touching tent
+            if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,tent.getPos(),tentWidth,tentHeight)) {
+                // Check if player can go to next day
+                if(collectedAllItems) {
+                    // Next day
+                    // Go to next day
+                    dayIsOver = true;
+                } else {
+                    // Can't go to next day
+                    triggerAlert("There are more items out there!");
+                }
+            } else {
+                // Collect Item
+                // Loop through all items
+                int index = 0;
+                for (std::unique_ptr<Item> &item : ItemsList) {
+                    // Check for collision with item
+                    if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,item->getPosition(),itemWidth,itemHeight)) {
+                        // Touching
+                        // Check if mushroom or regular item
+                        if(item->isMushroom()) {
+                            // Mushroom Item
+                            // Enable trip mode
+                            tripMode = true;
+                        }
+
+                        // Remove item from the list
+                        ItemsList.erase(std::remove(ItemsList.begin(),ItemsList.end(),item),ItemsList.end());
+
+                        // Break the loop
+                        break;
                     }
 
-                    // Remove item from the list
-                    ItemsList.erase(std::remove(ItemsList.begin(),ItemsList.end(),item),ItemsList.end());
-
-                    // Break the loop
-                    break;
+                    // Iterate
+                    index++;
                 }
-
-                // Iterate
-                index++;
             }
             break;
     }
