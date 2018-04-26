@@ -32,6 +32,7 @@ int curDay;
 string saveFileName;
 bool collectedAllItems;
 bool dayIsOver;
+bool tripMode;
 
 // Initial Startup
 // Sets the Global Graphic variables
@@ -43,6 +44,7 @@ void init() {
     // Set day handlers
     collectedAllItems = false;
     dayIsOver = false;
+    tripMode = false;
 
     // Set Save File
     saveFileName = "hikeSave.txt";
@@ -120,6 +122,9 @@ void display() {
     // Check for the day being over
     if(collectedAllItems && dayIsOver) {
         // Day is over, Go to new day
+        // Turn off trip mode
+        tripMode = false;
+
         // TODO: Continue to next day
     } else if(dayIsOver) {
         // Day is over, Not all items collected
@@ -242,26 +247,58 @@ void kbd(unsigned char key, int x, int y) {
 
         // w
         case 119:
-            // Move player
-            player.move(moveDirection::up);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::up);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::down);
+            }
             break;
 
         // a
         case 97:
-            // Move player
-            player.move(moveDirection::left);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::left);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::right);
+            }
             break;
 
         // s
         case 115:
-            // Move player
-            player.move(moveDirection::down);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::down);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::up);
+            }
             break;
 
         // d
         case 100:
-            // Move player
-            player.move(moveDirection::right);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::right);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::left);
+            }
             break;
 
         // e
@@ -276,15 +313,15 @@ void kbd(unsigned char key, int x, int y) {
                     // Check if mushroom or regular item
                     if(item->isMushroom()) {
                         // Mushroom Item
-                        // TODO: Enable trippy mode
-                    } else {
-                        // Regular Item
-                        // Remove item from the list
-                        ItemsList.erase(std::remove(ItemsList.begin(),ItemsList.end(),item),ItemsList.end());
-
-                        // Break the loop
-                        break;
+                        // Enable trip mode
+                        tripMode = true;
                     }
+
+                    // Remove item from the list
+                    ItemsList.erase(std::remove(ItemsList.begin(),ItemsList.end(),item),ItemsList.end());
+
+                    // Break the loop
+                    break;
                 }
 
                 // Iterate
@@ -301,16 +338,52 @@ void kbd(unsigned char key, int x, int y) {
 void kbdS(int key, int x, int y) {
     switch(key) {
         case GLUT_KEY_DOWN:
-            player.move(moveDirection::down);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::down);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::up);
+            }
             break;
         case GLUT_KEY_LEFT:
-            player.move(moveDirection::left);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::left);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::right);
+            }
             break;
         case GLUT_KEY_RIGHT:
-            player.move(moveDirection::right);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::right);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::left);
+            }
             break;
         case GLUT_KEY_UP:
-            player.move(moveDirection::up);
+            // Check if trip mode
+            if(!tripMode) {
+                // Not trip Mode
+                // Move Player
+                player.move(moveDirection::down);
+            } else {
+                // trip Mode
+                // Move Player
+                player.move(moveDirection::up);
+            }
             break;
     }
 
@@ -432,6 +505,7 @@ bool isTouchingItem(const posStruct &toucher, const posStruct &item) {
             toucher.yPos <= item.yPos+(itemHeight/2.0)); // Bottom
 }
 
+// Checks to see if two defined shapes ('a' and 'b') are touching within any of their bounds
 bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, const posStruct &b, double bWidth, double bHeight) {
     return !(b.xPos+(bWidth/2.0) < a.xPos-(aWidth/2.0) ||
              a.xPos+(aWidth/2.0) < b.xPos-(bWidth/2.0) ||
