@@ -114,6 +114,7 @@ void display() {
     if(!foundItem) {
         // No items were found, all items collected
         collectedAllItems = true;
+        triggerAlert("All items collected!");
     }
 
     // Check for the day being over
@@ -273,8 +274,17 @@ void kbd(unsigned char key, int x, int y) {
                 if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,item->getPosition(),itemWidth,itemHeight)) {
                     // Touching
                     // Check if mushroom or regular item
-                    // TODO
-                    cout << item->getItem() << endl;
+                    if(item->isMushroom()) {
+                        // Mushroom Item
+                        // TODO: Enable trippy mode
+                    } else {
+                        // Regular Item
+                        // Remove item from the list
+                        ItemsList.erase(std::remove(ItemsList.begin(),ItemsList.end(),item),ItemsList.end());
+
+                        // Break the loop
+                        break;
+                    }
                 }
 
                 // Iterate
