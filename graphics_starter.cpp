@@ -162,6 +162,7 @@ void display() {
     // Draw Alert Text
     if(showAlert) {
         drawAlert();
+        alertTimer(0);
     }
 
     // Render trigger
@@ -275,6 +276,11 @@ void timer(int extra) {
     glutTimerFunc(30, timer, 0);
 }
 
+void alertTimer(int extra) {
+    glutPostRedisplay();
+    glutTimerFunc(680, hideAlert, 0);
+}
+
 // Draw Function to create a square
 void drawSquare(colorStruct color, posStruct pos, double wdth, double lgth) {
     // Set Color
@@ -340,6 +346,10 @@ void drawAlert() {
     for (char c : alertText) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
     }
+}
+
+void hideAlert(int num) {
+    showAlert = false;
 }
 
 GLint getTextCenter(void* font, const std::string &text) {
