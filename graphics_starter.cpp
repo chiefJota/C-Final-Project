@@ -1,10 +1,11 @@
 #include <vector>
 #include <string>
+#include <fstream>
 #include "Items.h"
 #include "graphics.h"
 #include "Tent.h"
 
-
+using namespace std;
 
 // IMPORTANT: Make sure the path to GLUT matches your system as I have it installed in a different directory because of how my computer is configured.
 
@@ -17,6 +18,8 @@ int mouseX;
 int mouseY;
 double itemWidth = 8;
 double itemHeight = 8;
+bool showAlert = false;
+string alertText = "";
 
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
@@ -115,6 +118,11 @@ void display() {
         }
     }
 
+    // Draw Alert Text
+    if(showAlert) {
+        drawAlert();
+    }
+
     // Render trigger
     glFlush();
 }
@@ -124,27 +132,47 @@ void kbd(unsigned char key, int x, int y) {
     switch(key) {
         // Escape
         case 27:
+            // Save Game
+            if(!saveGame("hikeSave.sav")) {
+                // Save Failed
+                triggerAlert("Failed to save data please try again.");
+            } else {
+                triggerAlert("Saved the game.");
+            }
+
+            // Quit Game
             glutDestroyWindow(wd);
             exit(0);
 
+        // t
+        case 84:
+            // Save Game
+            if(!saveGame("hikeSave.sav")) {
+                // Save Failed
+                triggerAlert("Failed to save data please try again.");
+            } else {
+                triggerAlert("Saved the game.");
+            }
+            break;
+
         // w
         case 119:
-            player.move(up);
+            player.move(moveDirection::up);
             break;
 
         // a
         case 97:
-            player.move(left);
+            player.move(moveDirection::left);
             break;
 
         // s
         case 115:
-            player.move(down);
+            player.move(moveDirection::down);
             break;
 
         // d
         case 100:
-            player.move(right);
+            player.move(moveDirection::right);
             break;
     }
 
@@ -156,16 +184,16 @@ void kbd(unsigned char key, int x, int y) {
 void kbdS(int key, int x, int y) {
     switch(key) {
         case GLUT_KEY_DOWN:
-            player.move(down);
+            player.move(moveDirection::down);
             break;
         case GLUT_KEY_LEFT:
-            player.move(left);
+            player.move(moveDirection::left);
             break;
         case GLUT_KEY_RIGHT:
-            player.move(right);
+            player.move(moveDirection::right);
             break;
         case GLUT_KEY_UP:
-            player.move(up);
+            player.move(moveDirection::up);
             break;
     }
 
@@ -240,6 +268,29 @@ void drawItems(){
     }
 }
 
+void triggerAlert(const std::string &text) {
+    alertText = text;
+    showAlert = true;
+}
+
+void drawAlert() {
+    // Set Color
+    glColor3f(1,1,1);
+
+    // Get Center
+    GLint textCenter = 0;
+    for(char c : alertText) {
+        textCenter += glutBitmapWidth(GLUT_BITMAP_TIMES_ROMAN_24,c);
+    }
+    textCenter = (width/2)-(textCenter/2)-4;
+
+    // Draw
+    glRasterPos2i(textCenter,36);
+    for (char c : alertText) {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
+    }
+}
+
 // Checks to see if Point A is inside the bounds of Point B
 bool isTouchingItem(const posStruct &pointA, const posStruct &pointB) {
     return (pointA.xPos >= pointB.xPos-(itemWidth/2.0) && // left side
@@ -287,4 +338,52 @@ int main(int argc, char** argv) {
     // Enter the event-processing loop
     glutMainLoop();
     return 0;
+}
+
+// Saves the current player states to a text file.
+// Returns false if failed
+bool saveGame(const string &fileName) {
+    // Write Data Out
+    // Open Out File
+    ofstream fOut;
+    fOut.open(fileName);
+
+    // Check for out Out File open
+    if(fOut) {
+        // Write Player and Tent to file
+        fOut << player << "\n";
+        fOut << tent << "\n";
+    } else {
+        // Out File did not open
+        return false;
+    }
+
+    // Close the Out File
+    fOut.close();
+
+    return true;
+}
+
+// Load the current player states from a text file.
+// Returns false if failed
+bool loadGame(const string &fileName) {
+    // Write Data In
+    // Open In File
+    ifstream fIn;
+    fIn.open(fileName);
+
+    // Check for In File open
+    if(fIn) {
+        // Write to objects
+        fIn >> player;
+        fIn >> tent;
+    } else {
+        // In File did not open
+        return false;
+    }
+
+    // Close the In File
+    fIn.close();
+
+    return true;
 }

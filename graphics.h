@@ -61,4 +61,12 @@ void drawItems();
 
 bool isTouchingItem(const posStruct &pointA, const posStruct &pointB);
 
+bool saveGame(const std::string &fileName);
+
+bool loadGame(const std::string &fileName);
+
+void triggerAlert(const std::string &text);
+
+void drawAlert();
+
 #endif /* graphics_h */
