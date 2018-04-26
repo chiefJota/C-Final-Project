@@ -20,15 +20,18 @@ int mouseX;
 int mouseY;
 double itemWidth = 8;
 double itemHeight = 8;
+double playerWidth = 20;
+double playerHeight = 25;
 bool showAlert = false;
 string alertText = "";
-
 
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
 Tent tent(colorStruct(0,1,0),posStruct((int)width/2,(int)height/2));
 int curDay;
 string saveFileName;
+bool collectedAllItems;
+bool dayIsOver;
 
 // Initial Startup
 // Sets the Global Graphic variables
@@ -36,6 +39,10 @@ void init() {
 //    // Set window size // Now done above
 //    width = 500;
 //    height = 500;
+
+    // Set day handlers
+    collectedAllItems = false;
+    dayIsOver = false;
 
     // Set Save File
     saveFileName = "hikeSave.txt";
@@ -93,13 +100,37 @@ void display() {
     // Chooses the drawing mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+    // Check if all items non-poison items are collected
+    bool foundItem = false;
+    for(std::unique_ptr<Item> &item : ItemsList) {
+        // Check if it's a mushroom (poisoned)
+        if(!item->isMushroom()) {
+            // Not a mushroom, So non-mushroom items are still in play
+            foundItem = true;
+        }
+    }
+
+    // Check if non-poison items exist
+    if(!foundItem) {
+        // No items were found, all items collected
+        collectedAllItems = true;
+    }
+
+    // Check for the day being over
+    if(collectedAllItems && dayIsOver) {
+        // Day is over, Go to new day
+        // TODO: Continue to next day
+    } else if(dayIsOver) {
+        // Day is over, Not all items collected
+        // TODO: Game over screen because day ended before all items collected
+    }
 
     // --- Draw Start
     // Draw Tent
     drawSquare(tent.getColor(),tent.getPos(),40,40);
 
     // Draw Player
-    drawPlayer(player.getColor(),player.getPos(),20,25);
+    drawPlayer(player.getColor(),player.getPos(),playerWidth,playerHeight);
 
     // --- Draw Items
     drawItems();
@@ -210,22 +241,45 @@ void kbd(unsigned char key, int x, int y) {
 
         // w
         case 119:
+            // Move player
             player.move(moveDirection::up);
             break;
 
         // a
         case 97:
+            // Move player
             player.move(moveDirection::left);
             break;
 
         // s
         case 115:
+            // Move player
             player.move(moveDirection::down);
             break;
 
         // d
         case 100:
+            // Move player
             player.move(moveDirection::right);
+            break;
+
+        // e
+        case 101:
+            // Collect Item
+            // Loop through all items
+            int index = 0;
+            for(std::unique_ptr<Item> &item : ItemsList) {
+                // Check for collision with item
+                if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,item->getPosition(),itemWidth,itemHeight)) {
+                    // Touching
+                    // Check if mushroom or regular item
+                    // TODO
+                    cout << item->getItem() << endl;
+                }
+
+                // Iterate
+                index++;
+            }
             break;
     }
 
@@ -361,11 +415,18 @@ GLint getTextCenter(void* font, const std::string &text) {
 }
 
 // Checks to see if Point A is inside the bounds of Point B
-bool isTouchingItem(const posStruct &pointA, const posStruct &pointB) {
-    return (pointA.xPos >= pointB.xPos-(itemWidth/2.0) && // left side
-            pointA.xPos <= pointB.xPos+(itemWidth/2.0) && // right side
-            pointA.yPos >= pointB.yPos-(itemHeight/2.0) && // top
-            pointA.yPos <= pointB.yPos+(itemHeight/2.0)); // bottom
+bool isTouchingItem(const posStruct &toucher, const posStruct &item) {
+    return (toucher.xPos >= item.xPos-(itemWidth/2.0) && // Left side
+            toucher.xPos <= item.xPos+(itemWidth/2.0) && // Right side
+            toucher.yPos >= item.yPos-(itemHeight/2.0) && // Top
+            toucher.yPos <= item.yPos+(itemHeight/2.0)); // Bottom
+}
+
+bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, const posStruct &b, double bWidth, double bHeight) {
+    return !(b.xPos+(bWidth/2.0) < a.xPos-(aWidth/2.0) ||
+             a.xPos+(aWidth/2.0) < b.xPos-(bWidth/2.0) ||
+             b.yPos-(bHeight/2.0) > a.yPos+(aHeight/2.0) ||
+             a.yPos-(aHeight/2.0) > b.yPos+(bHeight/2.0));
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */

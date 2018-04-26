@@ -61,7 +61,9 @@ void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth);
 
 void drawItems();
 
-bool isTouchingItem(const posStruct &pointA, const posStruct &pointB);
+bool isTouchingItem(const posStruct &toucher, const posStruct &item);
+
+bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, const posStruct &b, double bWidth, double bHeight);
 
 bool saveGame(const std::string &fileName);
 
