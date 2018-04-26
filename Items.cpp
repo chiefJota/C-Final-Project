@@ -19,7 +19,11 @@ Item::Item(std::string name, colorStruct color, posStruct pos) {
 
 //default constructor for FoodItem
 FoodItem::FoodItem(){
-    srand(time(NULL));
+
+    //three seeds for each FoodItem
+    srand(randSeeds[1]);
+    srand(randSeeds[2]);
+    srand(randSeeds[3]);
 
     int windowW = 500;
     int windowH = 500;
@@ -55,7 +59,10 @@ FoodItem::FoodItem(std::string n, colorStruct color, posStruct pos) {
     *      isP = false
     */
 
-    srand(time(NULL));
+    //three seeds for each FoodItem
+    srand(randSeeds[1]);
+    srand(randSeeds[2]);
+    srand(randSeeds[3]);
 
     int MIN_CHANCE = 1;
     int MAX_CHANCE = 100;
@@ -176,7 +183,11 @@ std::istream &operator >> (std::istream &ins, FoodItem &item) {
 
 //default constructor for WaterItem
 WaterItem::WaterItem(){
-    srand(time(NULL));
+
+    //three seeds for each WaterItem
+    srand(randSeeds[4]);
+    srand(randSeeds[5]);
+    srand(randSeeds[6]);
 
     int windowW = 500;
     int windowH = 500;
@@ -204,7 +215,10 @@ WaterItem::WaterItem(std::string n, colorStruct color, posStruct pos) {
     this->color = color;
     this->pos = pos;
 
-    srand(time(NULL));
+    //three seeds for each WaterItem
+    srand(randSeeds[4]);
+    srand(randSeeds[5]);
+    srand(randSeeds[6]);
 
     int MIN_CHANCE = 1;
     int MAX_CHANCE = 100;
