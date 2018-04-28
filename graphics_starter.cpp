@@ -26,6 +26,10 @@ double tentHeight = 40;
 bool showAlert = false;
 string alertText;
 
+// Global Game Functions
+enum GameState {mainMenu,playing,lostGame};
+GameState gameState = playing;
+
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
 Tent tent(colorStruct(0,1,0),posStruct((int)width/2,(int)height/2));
@@ -34,6 +38,7 @@ string saveFileName;
 bool collectedAllItems;
 bool dayIsOver;
 bool tripMode;
+bool gameOverBool;
 
 // Initial Startup
 // Sets the Global Graphic variables
@@ -46,6 +51,7 @@ void init() {
     collectedAllItems = false;
     dayIsOver = false;
     tripMode = false;
+    gameOverBool = false;
 
     // Set Alert
     alertText = " ";
@@ -53,28 +59,17 @@ void init() {
     // Set Save File
     saveFileName = "hikeSave.txt";
 
-    // Set Day listener
-    curDay = tent.getDay()-1;
-
     //initialize random generator
     srand(time(NULL));
 
-    // Check for new day
-    if(curDay != tent.getDay()) {
+    // Spawn Items
+    generateItems();
 
-        //resize the vector of items
-        //ItemsList.resize(6);
-        std::vector<int> randNums = {rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height};
-
-        //Populates vector of items with FoodItems and the position is random
-        ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(randNums[0],randNums[1])));
-        ItemsList.push_back(std::make_unique<FoodItem>("Rocks", colorStruct(0.0,0.06,0.46),posStruct(randNums[2],randNums[3])));
-        ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83,0.71,0.55),posStruct(randNums[4],randNums[5])));
-
-        //Populates vector of items with WaterItems
-        ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(randNums[6],randNums[7])));
-        ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.3,0.8),posStruct(randNums[8],randNums[9])));
-        ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.1,0.95),posStruct(randNums[10],randNums[11])));
+    // Set up Day
+    if(gameState == playing) {
+        // TODO: Move to start button execution in addition to here
+        curDay = tent.getDay();
+        tent.setTime(tent.getStartTime());
     }
 }
 
@@ -102,80 +97,120 @@ void display() {
     // Chooses the drawing mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    // Check if trip mode is enabled
-    if(tripMode) {
-        // Enable blending
-        glEnable(GL_BLEND);
-
-        // Choose random
-        if(rand()%2) {
-            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
-        } else {
-            glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+    // Check game state
+    switch(gameState) {
+        case mainMenu: {
+            break;
         }
-    } else {
-        // Disable blending
-        glDisable(GL_BLEND);
-    }
 
-    // Check if all items non-poison items are collected
-    bool foundItem = false;
-    for(std::unique_ptr<Item> &item : ItemsList) {
-        // Check if it's a mushroom (poisoned)
-        if(!item->isMushroom()) {
-            // Not a mushroom, So non-mushroom items are still in play
-            foundItem = true;
-        }
-    }
+        case playing: {
+            // Check if trip mode is enabled
+            if (tripMode) {
+                // Enable blending
+                glEnable(GL_BLEND);
 
-    // Check if non-poison items exist
-    if(!foundItem) {
-        // No items were found, all items collected
-        collectedAllItems = true;
-        triggerAlert("All items collected!");
-    }
-
-    // Check for the day being over
-    if(collectedAllItems && dayIsOver) {
-        // Day is over, Go to new day
-        // Turn off trip mode
-        tripMode = false;
-
-        // TODO: Continue to next day
-    } else if(dayIsOver) {
-        // Day is over, Not all items collected
-        // TODO: Game over screen because day ended before all items collected
-    }
-
-    // --- Draw Start
-    // Draw Tent
-    drawSquare(tent.getColor(),tent.getPos(),tentWidth,tentHeight);
-
-    // Draw Player
-    drawPlayer(player.getColor(),player.getPos(),playerWidth,playerHeight);
-
-    // --- Draw Items
-    drawItems();
-
-    // Check for overlap with Items
-    for(std::unique_ptr<Item> &item : ItemsList) {
-        // Check position
-        if(isTouchingItem(posStruct(mouseX,mouseY),item->getPosition())) {
-            // Check if mushroom
-            if(item->isMushroom()) {
-                // Overlapped
-                drawText_Center("Poison",item->getPosition().xPos,item->getPosition().yPos);
+                // Choose random
+                if (rand() % 2) {
+                    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+                } else {
+                    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+                }
             } else {
-                // Overlapped
-                drawText_Center(item->getItem(),item->getPosition().xPos,item->getPosition().yPos);
+                // Disable blending
+                glDisable(GL_BLEND);
             }
-        }
-    }
 
-    // Draw Alert Text
-    if(showAlert) {
-        drawAlert();
-        alertTimer(0);
+            // Check if all items non-poison items are collected
+            bool foundItem = false;
+            for (std::unique_ptr<Item> &item : ItemsList) {
+                // Check if it's a mushroom (poisoned)
+                if (!item->isMushroom()) {
+                    // Not a mushroom, So non-mushroom items are still in play
+                    foundItem = true;
+                }
+            }
+
+            // Check if non-poison items exist
+            if (!foundItem) {
+                // No items were found, all items collected
+                collectedAllItems = true;
+                triggerAlert("All items collected!");
+            }
+
+            // Check for the day being over
+            if (collectedAllItems && dayIsOver) {
+                // Day is over, Go to new day
+                // Turn off trip mode
+                tripMode = false;
+
+                // Trigger Next Day
+                tent.goToNextDay();
+
+                // Spawn more items
+                generateItems();
+
+                // Reset for new day
+                collectedAllItems = false;
+                dayIsOver = false;
+
+                // Start timer again
+                curDay = tent.getDay();
+                tent.setTime(tent.getStartTime());
+            }
+
+            // --- Draw Start
+            // Draw Tent
+            drawSquare(tent.getColor(), tent.getPos(), tentWidth, tentHeight);
+
+            // Draw Player
+            drawPlayer(player.getColor(), player.getPos(), playerWidth, playerHeight);
+
+            // --- Draw Items
+            drawItems();
+
+            // Check for overlap with Items
+            for (std::unique_ptr<Item> &item : ItemsList) {
+                // Check position
+                if (isTouchingItem(posStruct(mouseX, mouseY), item->getPosition())) {
+                    // Check if mushroom
+                    if (item->isMushroom()) {
+                        // Overlapped
+                        drawText_Center("Poison", item->getPosition().xPos, item->getPosition().yPos);
+                    } else {
+                        // Overlapped
+                        drawText_Center(item->getItem(), item->getPosition().xPos, item->getPosition().yPos);
+                    }
+                }
+            }
+
+            // Draw Alert Text
+            if (showAlert) {
+                drawAlert();
+                alertTimer(0);
+            }
+
+            // Tick the Tent's Day Timer
+            if (!tent.tick()) {
+                cout << "Over " << tent.getCurrentTime() << endl;
+                // Day is over
+                gameOverBool = true;
+
+                // Day is over, Not all items collected
+                triggerAlert("You ran out of time.");
+
+                // TODO: Game over screen because day ended before all items collected
+            } else {
+                cout << "Going " << tent.getCurrentTime() << endl;
+                // Day is continuing
+                // Draw HUD
+                drawHUD();
+            }
+            break;
+        }
+
+        case lostGame: {
+            break;
+        }
     }
 
     // Render trigger
@@ -184,139 +219,155 @@ void display() {
 
 // http://www.theasciicode.com.ar/ascii-control-characters/escape-ascii-code-27.html
 void kbd(unsigned char key, int x, int y) {
-    switch(key) {
-        // Escape
-        case 27:
-            // Save Game
-            if(!saveGame(saveFileName)) {
-                // Save Failed
-                triggerAlert("Failed to save data please try again.");
-            } else {
-                triggerAlert("Saved the game.");
-            }
-
-            // Quit Game
-            glutDestroyWindow(wd);
-            exit(0);
-
-        // t
-        case 116:
-            // Save Game
-            if(!saveGame(saveFileName)) {
-                // Save Failed
-                triggerAlert("Failed to save data please try again.");
-            } else {
-                triggerAlert("Saved the game.");
-            }
+    // Check game state
+    switch(gameState) {
+        case mainMenu: {
             break;
+        }
 
-        // y
-        case 121:
-            // Load Game
-            if(!loadGame(saveFileName)) {
-                // Load Failed
-                triggerAlert("Failed to load data please try again.");
-            } else {
-                triggerAlert("Loaded your save.");
-            }
-            break;
-
-        // w
-        case 119:
-            // Check if trip mode
-            if(!tripMode) {
-                // Not trip Mode
-                // Move Player
-                player.move(moveDirection::up);
-            } else {
-                // trip Mode
-                // Move Player
-                player.move(moveDirection::down);
-            }
-            break;
-
-        // a
-        case 97:
-            // Check if trip mode
-            if(!tripMode) {
-                // Not trip Mode
-                // Move Player
-                player.move(moveDirection::left);
-            } else {
-                // trip Mode
-                // Move Player
-                player.move(moveDirection::right);
-            }
-            break;
-
-        // s
-        case 115:
-            // Check if trip mode
-            if(!tripMode) {
-                // Not trip Mode
-                // Move Player
-                player.move(moveDirection::down);
-            } else {
-                // trip Mode
-                // Move Player
-                player.move(moveDirection::up);
-            }
-            break;
-
-        // d
-        case 100:
-            // Check if trip mode
-            if(!tripMode) {
-                // Not trip Mode
-                // Move Player
-                player.move(moveDirection::right);
-            } else {
-                // trip Mode
-                // Move Player
-                player.move(moveDirection::left);
-            }
-            break;
-
-        // e
-        case 101:
-            // Check if touching tent
-            if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,tent.getPos(),tentWidth,tentHeight)) {
-                // Check if player can go to next day
-                if(collectedAllItems) {
-                    // Next day
-                    // Go to next day
-                    dayIsOver = true;
-                } else {
-                    // Can't go to next day
-                    triggerAlert("There are more items out there!");
-                }
-            } else {
-                // Collect Item
-                // Loop through all items
-                int index = 0;
-                for (std::unique_ptr<Item> &item : ItemsList) {
-                    // Check for collision with item
-                    if(isShapeTouchingShape(player.getPos(),playerWidth,playerHeight,item->getPosition(),itemWidth,itemHeight)) {
-                        // Touching
-                        // Check if mushroom or regular item
-                        if(item->isMushroom()) {
-                            // Mushroom Item
-                            // Enable trip mode
-                            tripMode = true;
-                        }
-
-                        // Remove item from the list
-                        ItemsList.erase(std::remove(ItemsList.begin(),ItemsList.end(),item),ItemsList.end());
-
-                        // Break the loop
-                        break;
+        case playing: {
+            switch (key) {
+                // Escape
+                case 27:
+                    // Save Game
+                    if (!saveGame(saveFileName)) {
+                        // Save Failed
+                        triggerAlert("Failed to save data please try again.");
+                    } else {
+                        triggerAlert("Saved the game.");
                     }
 
-                    // Iterate
-                    index++;
-                }
+                    // Quit Game
+                    glutDestroyWindow(wd);
+                    exit(0);
+
+                    // t
+                case 116:
+                    // Save Game
+                    if (!saveGame(saveFileName)) {
+                        // Save Failed
+                        triggerAlert("Failed to save data please try again.");
+                    } else {
+                        triggerAlert("Saved the game.");
+                    }
+                    break;
+
+                    // y
+                case 121:
+                    // Load Game
+                    if (!loadGame(saveFileName)) {
+                        // Load Failed
+                        triggerAlert("Failed to load data please try again.");
+                    } else {
+                        triggerAlert("Loaded your save.");
+                    }
+                    break;
+
+                    // w
+                case 119:
+                    // Check if trip mode
+                    if (!tripMode) {
+                        // Not trip Mode
+                        // Move Player
+                        player.move(moveDirection::up);
+                    } else {
+                        // trip Mode
+                        // Move Player
+                        player.move(moveDirection::down);
+                    }
+                    break;
+
+                    // a
+                case 97:
+                    // Check if trip mode
+                    if (!tripMode) {
+                        // Not trip Mode
+                        // Move Player
+                        player.move(moveDirection::left);
+                    } else {
+                        // trip Mode
+                        // Move Player
+                        player.move(moveDirection::right);
+                    }
+                    break;
+
+                    // s
+                case 115:
+                    // Check if trip mode
+                    if (!tripMode) {
+                        // Not trip Mode
+                        // Move Player
+                        player.move(moveDirection::down);
+                    } else {
+                        // trip Mode
+                        // Move Player
+                        player.move(moveDirection::up);
+                    }
+                    break;
+
+                    // d
+                case 100:
+                    // Check if trip mode
+                    if (!tripMode) {
+                        // Not trip Mode
+                        // Move Player
+                        player.move(moveDirection::right);
+                    } else {
+                        // trip Mode
+                        // Move Player
+                        player.move(moveDirection::left);
+                    }
+                    break;
+
+                    // e
+                case 101:
+                    // Check if touching tent
+                    if (isShapeTouchingShape(player.getPos(), playerWidth, playerHeight, tent.getPos(), tentWidth,
+                                             tentHeight)) {
+                        // Check if player can go to next day
+                        if (collectedAllItems) {
+                            // Next day
+                            // Go to next day
+                            dayIsOver = true;
+                        } else {
+                            // Can't go to next day
+                            triggerAlert("There are more items out there!");
+                        }
+                    } else {
+                        // Collect Item
+                        // Loop through all items
+                        int index = 0;
+                        for (std::unique_ptr<Item> &item : ItemsList) {
+                            // Check for collision with item
+                            if (isShapeTouchingShape(player.getPos(), playerWidth, playerHeight, item->getPosition(),
+                                                     itemWidth, itemHeight)) {
+                                // Touching
+                                // Check if mushroom or regular item
+                                if (item->isMushroom()) {
+                                    // Mushroom Item
+                                    // Enable trip mode
+                                    tripMode = true;
+                                }
+
+                                // Remove item from the list
+                                ItemsList.erase(std::remove(ItemsList.begin(), ItemsList.end(), item), ItemsList.end());
+
+                                // Break the loop
+                                break;
+                            }
+
+                            // Iterate
+                            index++;
+                        }
+                    }
+                    break;
             }
             break;
+        }
+
+        case lostGame: {
+            break;
+        }
     }
 
     glutPostRedisplay();
@@ -325,55 +376,68 @@ void kbd(unsigned char key, int x, int y) {
 }
 
 void kbdS(int key, int x, int y) {
-    switch(key) {
-        case GLUT_KEY_DOWN:
-            // Check if trip mode
-            if(!tripMode) {
-                // Not trip Mode
-                // Move Player
-                player.move(moveDirection::down);
-            } else {
-                // trip Mode
-                // Move Player
-                player.move(moveDirection::up);
+    switch(gameState) {
+        case mainMenu: {
+            break;
+        }
+
+        case playing: {
+            switch (key) {
+                case GLUT_KEY_DOWN:
+                    // Check if trip mode
+                    if (!tripMode) {
+                        // Not trip Mode
+                        // Move Player
+                        player.move(moveDirection::down);
+                    } else {
+                        // trip Mode
+                        // Move Player
+                        player.move(moveDirection::up);
+                    }
+                    break;
+                case GLUT_KEY_LEFT:
+                    // Check if trip mode
+                    if (!tripMode) {
+                        // Not trip Mode
+                        // Move Player
+                        player.move(moveDirection::left);
+                    } else {
+                        // trip Mode
+                        // Move Player
+                        player.move(moveDirection::right);
+                    }
+                    break;
+                case GLUT_KEY_RIGHT:
+                    // Check if trip mode
+                    if (!tripMode) {
+                        // Not trip Mode
+                        // Move Player
+                        player.move(moveDirection::right);
+                    } else {
+                        // trip Mode
+                        // Move Player
+                        player.move(moveDirection::left);
+                    }
+                    break;
+                case GLUT_KEY_UP:
+                    // Check if trip mode
+                    if (!tripMode) {
+                        // Not trip Mode
+                        // Move Player
+                        player.move(moveDirection::up);
+                    } else {
+                        // trip Mode
+                        // Move Player
+                        player.move(moveDirection::down);
+                    }
+                    break;
             }
             break;
-        case GLUT_KEY_LEFT:
-            // Check if trip mode
-            if(!tripMode) {
-                // Not trip Mode
-                // Move Player
-                player.move(moveDirection::left);
-            } else {
-                // trip Mode
-                // Move Player
-                player.move(moveDirection::right);
-            }
-            break;
-        case GLUT_KEY_RIGHT:
-            // Check if trip mode
-            if(!tripMode) {
-                // Not trip Mode
-                // Move Player
-                player.move(moveDirection::right);
-            } else {
-                // trip Mode
-                // Move Player
-                player.move(moveDirection::left);
-            }
-            break;
-        case GLUT_KEY_UP:
-            // Check if trip mode
-            if(!tripMode) {
-                // Not trip Mode
-                // Move Player
-                player.move(moveDirection::up);
-            } else {
-                // trip Mode
-                // Move Player
-                player.move(moveDirection::down);
-            }
-            break;
+        }
+
+        case lostGame: {
+                break;
+        }
     }
 
     glutPostRedisplay();
@@ -441,7 +505,6 @@ void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth) {
 }
 
 void drawItems(){
-
     //draw items
     for(int i=0; i < ItemsList.size(); i++){
         //manipulate output to display nicely
@@ -535,6 +598,31 @@ void drawText_Center(const string &text, int textX, int textY) {
     for (char c : message) {
         glutBitmapCharacter(font,c);
     }
+}
+
+void drawHUD() {
+    // Draw Timer
+    string hudTimer = "Day "+to_string(tent.getDay()+1)+": "+to_string(tent.getCurrentTime());
+    drawText_Center(hudTimer,width/2,height-10);
+}
+
+void generateItems() {
+    // Clear the ItemsList
+    ItemsList.clear();
+
+    //resize the vector of items
+    //ItemsList.resize(6);
+    std::vector<int> randNums = {rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height};
+
+    //Populates vector of items with FoodItems and the position is random
+    ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(randNums[0],randNums[1])));
+    ItemsList.push_back(std::make_unique<FoodItem>("Rocks", colorStruct(0.0,0.06,0.46),posStruct(randNums[2],randNums[3])));
+    ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83,0.71,0.55),posStruct(randNums[4],randNums[5])));
+
+    //Populates vector of items with WaterItems
+    ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(randNums[6],randNums[7])));
+    ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.3,0.8),posStruct(randNums[8],randNums[9])));
+    ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.1,0.95),posStruct(randNums[10],randNums[11])));
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */

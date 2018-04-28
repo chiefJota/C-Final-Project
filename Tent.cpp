@@ -24,8 +24,6 @@ void Tent::goToNextDay() {
     curDay++;
     //set new starting point to countdown from
     startTime = startTime - (curDay * 10);
-
-
 }
 
 int Tent::getDay(){
@@ -50,6 +48,10 @@ bool Tent::tick(){
 
 double Tent::getCurrentTime(){
     return curTime;
+}
+
+double Tent::getStartTime() const {
+    return startTime;
 }
 
 // Text I/O Streams

@@ -14,7 +14,7 @@ protected:
     posStruct pos;
     int curDay = 0;
     double curTime = 0;
-    double startTime = 100;
+    double startTime = 1000;
 //    std::vector<std::unique_ptr<Item>> items;
     int dayOut;
 
@@ -61,6 +61,13 @@ public:
      * Effects:gets position
     */
     posStruct getPos() const;
+
+    /**
+     * Requires:
+     * Modifies:
+     * Effects:gets startTime
+    */
+    double getStartTime() const;
 
     /**
      * Requires:items are necessary and cannot be added until graphic portion
