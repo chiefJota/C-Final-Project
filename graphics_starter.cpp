@@ -367,11 +367,11 @@ void kbdS(int key, int x, int y) {
             if(!tripMode) {
                 // Not trip Mode
                 // Move Player
-                player.move(moveDirection::down);
+                player.move(moveDirection::up);
             } else {
                 // trip Mode
                 // Move Player
-                player.move(moveDirection::up);
+                player.move(moveDirection::down);
             }
             break;
     }
