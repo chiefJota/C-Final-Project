@@ -69,7 +69,7 @@ void drawText_Center(const std::string &text, int textX, int textY);
 
 void drawHUD();
 
-void startNewDay();
+void generateItems();
 
 bool saveGame(const std::string &fileName);
 

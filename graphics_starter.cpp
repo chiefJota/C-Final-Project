@@ -26,6 +26,10 @@ double tentHeight = 40;
 bool showAlert = false;
 string alertText;
 
+// Global Game Functions
+enum GameState {mainMenu,playing,};
+GameState gameState = mainMenu;
+
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
 Tent tent(colorStruct(0,1,0),posStruct((int)width/2,(int)height/2));
@@ -34,6 +38,7 @@ string saveFileName;
 bool collectedAllItems;
 bool dayIsOver;
 bool tripMode;
+bool gameOverBool;
 
 // Initial Startup
 // Sets the Global Graphic variables
@@ -46,6 +51,7 @@ void init() {
     collectedAllItems = false;
     dayIsOver = false;
     tripMode = false;
+    gameOverBool = false;
 
     // Set Alert
     alertText = " ";
@@ -56,19 +62,8 @@ void init() {
     //initialize random generator
     srand(time(NULL));
 
-    //resize the vector of items
-    //ItemsList.resize(6);
-    std::vector<int> randNums = {rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height};
-
-    //Populates vector of items with FoodItems and the position is random
-    ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(randNums[0],randNums[1])));
-    ItemsList.push_back(std::make_unique<FoodItem>("Rocks", colorStruct(0.0,0.06,0.46),posStruct(randNums[2],randNums[3])));
-    ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83,0.71,0.55),posStruct(randNums[4],randNums[5])));
-
-    //Populates vector of items with WaterItems
-    ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(randNums[6],randNums[7])));
-    ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.3,0.8),posStruct(randNums[8],randNums[9])));
-    ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.1,0.95),posStruct(randNums[10],randNums[11])));
+    // Spawn Items
+    generateItems();
 
     // Set up Day 1
     curDay = tent.getDay();
@@ -138,16 +133,29 @@ void display() {
         // Turn off trip mode
         tripMode = false;
 
-        // TODO: Continue to next day
-    } else if(dayIsOver) {
-        // Day is over, Not all items collected
-        // TODO: Game over screen because day ended before all items collected
+        // Trigger Next Day
+        tent.goToNextDay();
+
+        // Spawn more items
+        generateItems();
+
+        // Reset for new day
+        collectedAllItems = false;
+        dayIsOver = false;
+
+        // Start timer again
+        curDay = tent.getDay();
+        tent.setTime(tent.getStartTime());
     }
 
-    // --- Draw Start
-    // Draw HUD
-    drawHUD();
+//    if(gameOver) {
+//        // Day is over, Not all items collected
+//        triggerAlert("You ran out of time.");
+//
+//        // TODO: Game over screen because day ended before all items collected
+//    }
 
+    // --- Draw Start
     // Draw Tent
     drawSquare(tent.getColor(),tent.getPos(),tentWidth,tentHeight);
 
@@ -180,14 +188,19 @@ void display() {
 
     // Tick the Tent's Day Timer
     if(!tent.tick()) {
+        cout << "Over " << tent.getCurrentTime()  << endl;
         // Day is over
-        cout << "Day Over" << tent.getCurrentTime() << endl;
+        gameOverBool = true;
+
+        // Day is over, Not all items collected
+        triggerAlert("You ran out of time.");
+
+        // TODO: Game over screen because day ended before all items collected
     } else {
+        cout << "Going " << tent.getCurrentTime() << endl;
         // Day is continuing
-        cout << "Keep Going" << tent.getCurrentTime() << endl;
-
-        // Update GUI Timer
-
+        // Draw HUD
+        drawHUD();
     }
 
     // Render trigger
@@ -550,12 +563,27 @@ void drawText_Center(const string &text, int textX, int textY) {
 
 void drawHUD() {
     // Draw Timer
-    string hudTimer = "Timer: "+std::to_string(tent.getCurrentTime());
-    drawText_Center("Timer: "+std::to_string(tent.getCurrentTime()),width/2,height-10);
+    string hudTimer = "Day "+to_string(tent.getDay()+1)+": "+to_string(tent.getCurrentTime());
+    drawText_Center(hudTimer,width/2,height-10);
 }
 
-void startNewDay() {
+void generateItems() {
+    // Clear the ItemsList
+    ItemsList.clear();
 
+    //resize the vector of items
+    //ItemsList.resize(6);
+    std::vector<int> randNums = {rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height};
+
+    //Populates vector of items with FoodItems and the position is random
+    ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(randNums[0],randNums[1])));
+    ItemsList.push_back(std::make_unique<FoodItem>("Rocks", colorStruct(0.0,0.06,0.46),posStruct(randNums[2],randNums[3])));
+    ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83,0.71,0.55),posStruct(randNums[4],randNums[5])));
+
+    //Populates vector of items with WaterItems
+    ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(randNums[6],randNums[7])));
+    ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.3,0.8),posStruct(randNums[8],randNums[9])));
+    ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.1,0.95),posStruct(randNums[10],randNums[11])));
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */
