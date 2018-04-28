@@ -53,29 +53,26 @@ void init() {
     // Set Save File
     saveFileName = "hikeSave.txt";
 
-    // Set Day listener
-    curDay = tent.getDay()-1;
-
     //initialize random generator
     srand(time(NULL));
 
-    // Check for new day
-    if(curDay != tent.getDay()) {
+    //resize the vector of items
+    //ItemsList.resize(6);
+    std::vector<int> randNums = {rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height};
 
-        //resize the vector of items
-        //ItemsList.resize(6);
-        std::vector<int> randNums = {rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height};
+    //Populates vector of items with FoodItems and the position is random
+    ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(randNums[0],randNums[1])));
+    ItemsList.push_back(std::make_unique<FoodItem>("Rocks", colorStruct(0.0,0.06,0.46),posStruct(randNums[2],randNums[3])));
+    ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83,0.71,0.55),posStruct(randNums[4],randNums[5])));
 
-        //Populates vector of items with FoodItems and the position is random
-        ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(randNums[0],randNums[1])));
-        ItemsList.push_back(std::make_unique<FoodItem>("Rocks", colorStruct(0.0,0.06,0.46),posStruct(randNums[2],randNums[3])));
-        ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83,0.71,0.55),posStruct(randNums[4],randNums[5])));
+    //Populates vector of items with WaterItems
+    ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(randNums[6],randNums[7])));
+    ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.3,0.8),posStruct(randNums[8],randNums[9])));
+    ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.1,0.95),posStruct(randNums[10],randNums[11])));
 
-        //Populates vector of items with WaterItems
-        ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(randNums[6],randNums[7])));
-        ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.3,0.8),posStruct(randNums[8],randNums[9])));
-        ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.1,0.95),posStruct(randNums[10],randNums[11])));
-    }
+    // Set up Day 1
+    curDay = tent.getDay();
+    tent.setTime(tent.getStartTime());
 }
 
 // Initialize OpenGL Graphics
@@ -148,6 +145,9 @@ void display() {
     }
 
     // --- Draw Start
+    // Draw HUD
+    drawHUD();
+
     // Draw Tent
     drawSquare(tent.getColor(),tent.getPos(),tentWidth,tentHeight);
 
@@ -176,6 +176,18 @@ void display() {
     if(showAlert) {
         drawAlert();
         alertTimer(0);
+    }
+
+    // Tick the Tent's Day Timer
+    if(!tent.tick()) {
+        // Day is over
+        cout << "Day Over" << tent.getCurrentTime() << endl;
+    } else {
+        // Day is continuing
+        cout << "Keep Going" << tent.getCurrentTime() << endl;
+
+        // Update GUI Timer
+
     }
 
     // Render trigger
@@ -441,7 +453,6 @@ void drawPlayer(colorStruct color, posStruct pos, double wdth, double lgth) {
 }
 
 void drawItems(){
-
     //draw items
     for(int i=0; i < ItemsList.size(); i++){
         //manipulate output to display nicely
@@ -535,6 +546,16 @@ void drawText_Center(const string &text, int textX, int textY) {
     for (char c : message) {
         glutBitmapCharacter(font,c);
     }
+}
+
+void drawHUD() {
+    // Draw Timer
+    string hudTimer = "Timer: "+std::to_string(tent.getCurrentTime());
+    drawText_Center("Timer: "+std::to_string(tent.getCurrentTime()),width/2,height-10);
+}
+
+void startNewDay() {
+
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */

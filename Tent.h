@@ -63,6 +63,13 @@ public:
     posStruct getPos() const;
 
     /**
+     * Requires:
+     * Modifies:
+     * Effects:gets startTime
+    */
+    double getStartTime() const;
+
+    /**
      * Requires:items are necessary and cannot be added until graphic portion
      * Modifies:
      * Effects:gets items

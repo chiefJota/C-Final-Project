@@ -67,6 +67,10 @@ bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, con
 
 void drawText_Center(const std::string &text, int textX, int textY);
 
+void drawHUD();
+
+void startNewDay();
+
 bool saveGame(const std::string &fileName);
 
 bool loadGame(const std::string &fileName);

@@ -52,6 +52,10 @@ double Tent::getCurrentTime(){
     return curTime;
 }
 
+double Tent::getStartTime() const {
+    return startTime;
+}
+
 // Text I/O Streams
 std::ostream &operator << (std::ostream &outs, const Tent &t) {
     // Write variables
