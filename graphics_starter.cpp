@@ -175,10 +175,10 @@ void display() {
                     // Check if mushroom
                     if (item->isMushroom()) {
                         // Overlapped
-                        drawText_Center("Poison", item->getPosition().xPos, item->getPosition().yPos);
+                        drawText_Center("Poison", colorStruct(1,0,0), item->getPosition().xPos, item->getPosition().yPos);
                     } else {
                         // Overlapped
-                        drawText_Center(item->getItem(), item->getPosition().xPos, item->getPosition().yPos);
+                        drawText_Center(item->getItem(), colorStruct(1,1,1), item->getPosition().xPos, item->getPosition().yPos);
                     }
                 }
             }
@@ -580,13 +580,13 @@ bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, con
              a.yPos-(aHeight/2.0) > b.yPos+(bHeight/2.0));
 }
 
-void drawText_Center(const string &text, int textX, int textY) {
+void drawText_Center(const string &text, const colorStruct &color, int textX, int textY) {
     // Variable
     auto font = GLUT_BITMAP_TIMES_ROMAN_24;
 
     // Display String
     std::string message = text;
-    glColor3f(1,0,0);
+    glColor3f(color.red,color.green,color.blue);
 
     // Set Position
     GLint txtX = textX-getTextCenter(font,message);
@@ -618,7 +618,7 @@ void drawText_Center(const string &text, int textX, int textY) {
 void drawHUD() {
     // Draw Timer
     string hudTimer = "Day "+to_string(tent.getDay()+1)+": "+to_string(tent.getCurrentTime());
-    drawText_Center(hudTimer,width/2,height-10);
+    drawText_Center(hudTimer,colorStruct(1,1,1),width/2,height-10);
 }
 
 void generateItems() {

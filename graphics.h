@@ -65,7 +65,7 @@ bool isTouchingItem(const posStruct &toucher, const posStruct &item);
 
 bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, const posStruct &b, double bWidth, double bHeight);
 
-void drawText_Center(const std::string &text, int textX, int textY);
+void drawText_Center(const std::string &text, const colorStruct &color, int textX, int textY);
 
 void drawHUD();
 
