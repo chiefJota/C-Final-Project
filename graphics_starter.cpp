@@ -185,7 +185,6 @@ void display() {
 
             // Tick the Tent's Day Timer
             if (!tent.tick()) {
-                cout << "Over " << tent.getCurrentTime() << endl;
                 // Day is over
                 gameOverBool = true;
 
@@ -196,7 +195,6 @@ void display() {
                 gameState = lostGame;
 
             } else {
-                cout << "Going " << tent.getCurrentTime() << endl;
                 // Day is continuing
                 // Draw HUD
                 drawHUD();
@@ -209,6 +207,7 @@ void display() {
             break;
         }
     }
+
     // Draw Alert Text
     if (showAlert) {
         drawAlert();
@@ -219,9 +218,11 @@ void display() {
     glFlush();
 }
 
-//game is over
+// Game is over
 void gameOverDisplay(){
-    triggerAlert("You Are Dead... Click to start a new game.");
+    // Do the text
+    drawText_Center("You made it to Day "+to_string(tent.getDay()+1)+" and died.",colorStruct(1,1,1),width/2,(height/2)-24);
+    drawText_Center("Click to continue.",colorStruct(1,1,1),width/2,(height/2)+24);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
@@ -468,6 +469,7 @@ void mouse(int button, int state, int x, int y) {
         case lostGame: {
             if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON){
                 gameState = mainMenu;
+                cout << "Work" << endl;
             }
         }
     }
