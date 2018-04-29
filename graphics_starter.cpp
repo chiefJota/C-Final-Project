@@ -28,7 +28,7 @@ string alertText;
 
 // Global Game Functions
 enum GameState {mainMenu,playing,lostGame};
-GameState gameState = playing;
+GameState gameState = mainMenu;
 
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
@@ -100,6 +100,20 @@ void display() {
     // Check game state
     switch(gameState) {
         case mainMenu: {
+            // Define color
+            colorStruct menuColor = colorStruct(1,1,1);
+
+            // Draw Title Text
+            drawText_Center("Trippy Hike",menuColor,width/2,42);
+
+            // Draw Buttons
+
+            // Draw Controls
+            drawText_Center("Controls:",menuColor,width/2,height-(24*5));
+            drawText_Center("[Mouse Hover] Reveal Item Name",menuColor,width/2,height-(24*4));
+            drawText_Center("[W/A/S/D] Move Character",menuColor,width/2,height-(24*3));
+            drawText_Center("[E] Interact",menuColor,width/2,height-(24*2));
+            drawText_Center("[ESC] Exit and Save Game",menuColor,width/2,height-24);
             break;
         }
 
@@ -223,6 +237,8 @@ void gameOverDisplay(){
     // Do the text
     drawText_Center("You made it to Day "+to_string(tent.getDay()+1)+" and died.",colorStruct(1,1,1),width/2,(height/2)-24);
     drawText_Center("Click to continue.",colorStruct(1,1,1),width/2,(height/2)+24);
+
+    // Color
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
@@ -468,8 +484,11 @@ void mouse(int button, int state, int x, int y) {
     switch(gameState) {
         case lostGame: {
             if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON){
+                // Relocate to main menu
                 gameState = mainMenu;
-                cout << "Work" << endl;
+
+                // Change background color
+                glClearColor(0.3f, 0.5f, 0.4f, 0.0f);
             }
         }
     }
