@@ -219,10 +219,11 @@ void display() {
     glFlush();
 }
 
-//game is over
 void gameOverDisplay(){
-    triggerAlert("You Are Dead... Click to start a new game.");
+    drawText_Center("You are dead. You survived: " + to_string(tent.getDay()+1) + " days.",width/2,height/2);
+    triggerAlert("Click to return to menu");
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
 }
 
 // http://www.theasciicode.com.ar/ascii-control-characters/escape-ascii-code-27.html
