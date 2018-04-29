@@ -183,12 +183,6 @@ void display() {
                 }
             }
 
-            // Draw Alert Text
-            if (showAlert) {
-                drawAlert();
-                alertTimer(0);
-            }
-
             // Tick the Tent's Day Timer
             if (!tent.tick()) {
                 cout << "Over " << tent.getCurrentTime() << endl;
@@ -199,6 +193,8 @@ void display() {
                 triggerAlert("You ran out of time.");
 
                 // TODO: Game over screen because day ended before all items collected
+                gameState = lostGame;
+
             } else {
                 cout << "Going " << tent.getCurrentTime() << endl;
                 // Day is continuing
@@ -209,12 +205,24 @@ void display() {
         }
 
         case lostGame: {
+            gameOverDisplay();
             break;
         }
+    }
+    // Draw Alert Text
+    if (showAlert) {
+        drawAlert();
+        alertTimer(0);
     }
 
     // Render trigger
     glFlush();
+}
+
+//game is over
+void gameOverDisplay(){
+    triggerAlert("You Are Dead... Click to start a new game.");
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 // http://www.theasciicode.com.ar/ascii-control-characters/escape-ascii-code-27.html
@@ -436,7 +444,7 @@ void kbdS(int key, int x, int y) {
         }
 
         case lostGame: {
-                break;
+            break;
         }
     }
 
@@ -456,6 +464,13 @@ void cursor(int x, int y) {
 // button will be GLUT_LEFT_BUTTON or GLUT_RIGHT_BUTTON
 // state will be GLUT_UP or GLUT_DOWN
 void mouse(int button, int state, int x, int y) {
+    switch(gameState) {
+        case lostGame: {
+            if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON){
+                gameState = mainMenu;
+            }
+        }
+    }
 
     glutPostRedisplay();
 }
@@ -627,7 +642,7 @@ void generateItems() {
 
 /* Main function: GLUT runs as a console application starting at main()  */
 int main(int argc, char** argv) {
-    
+
     init();
 
     glutInit(&argc, argv);          // Initialize GLUT
