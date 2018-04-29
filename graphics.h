@@ -69,6 +69,8 @@ void drawText_Center(const std::string &text, const colorStruct &color, int text
 
 void drawHUD();
 
+void drawButton(const std::string &text, const posStruct &pos, const colorStruct &textColor, const colorStruct &buttonColor, int buttonWidth, int buttonHeight);
+
 void generateItems();
 
 bool saveGame(const std::string &fileName);
@@ -82,6 +84,8 @@ void drawAlert();
 void hideAlert(int num);
 
 void gameOverDisplay();
+
+void prepareGameToStart();
 
 GLint getTextCenter(void* font, const std::string &text);
 

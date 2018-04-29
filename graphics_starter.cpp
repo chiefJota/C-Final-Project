@@ -38,7 +38,8 @@ string saveFileName;
 bool collectedAllItems;
 bool dayIsOver;
 bool tripMode;
-bool gameOverBool;
+bool hoverStartBtn;
+bool hoverLoadBtn;
 
 // Initial Startup
 // Sets the Global Graphic variables
@@ -51,7 +52,6 @@ void init() {
     collectedAllItems = false;
     dayIsOver = false;
     tripMode = false;
-    gameOverBool = false;
 
     // Set Alert
     alertText = " ";
@@ -67,9 +67,7 @@ void init() {
 
     // Set up Day
     if(gameState == playing) {
-        // TODO: Move to start button execution in addition to here
-        curDay = tent.getDay();
-        tent.setTime(tent.getStartTime());
+        prepareGameToStart();
     }
 }
 
@@ -104,9 +102,37 @@ void display() {
             colorStruct menuColor = colorStruct(1,1,1);
 
             // Draw Title Text
-            drawText_Center("Trippy Hike",menuColor,width/2,42);
+            string titleOfGame = "Trippy Hike";
+            drawText_Center(titleOfGame,colorStruct(1,0,0),(width/2)-15,75);
+            drawText_Center(titleOfGame,colorStruct(0,1,0),(width/2)+15,70);
+            drawText_Center(titleOfGame,colorStruct(0,0,1),(width/2)-25,90);
+            drawText_Center(titleOfGame,colorStruct(0,0,0),(width/2)+2,78);
+            drawText_Center(titleOfGame,colorStruct(0,0,0),(width/2)+2,73);
+            drawText_Center(titleOfGame,colorStruct(0,0,0),(width/2)-2,73);
+            drawText_Center(titleOfGame,colorStruct(0,0,0),(width/2)-2,78);
+            drawText_Center(titleOfGame,menuColor,width/2,75);
 
             // Draw Buttons
+            int menuBtnWidth = 150;
+            int menuBtnHeight = 50;
+
+            if(isShapeTouchingShape(posStruct(mouseX,mouseY),5,5,posStruct(width/2,(height/2)-menuBtnHeight-10),menuBtnWidth,menuBtnHeight)) {
+                drawButton("New Game",posStruct(width/2,(height/2)-menuBtnHeight-10),colorStruct(1,1,1),colorStruct(0,0,0),menuBtnWidth,menuBtnHeight);
+                hoverStartBtn = true;
+            } else {
+                // It's hovering
+                drawButton("New Game",posStruct(width/2,(height/2)-menuBtnHeight-10),colorStruct(0,0,0),colorStruct(1,1,1),menuBtnWidth,menuBtnHeight);
+                hoverStartBtn = false;
+            }
+
+            if(isShapeTouchingShape(posStruct(mouseX,mouseY),5,5,posStruct(width/2,height/2),menuBtnWidth,menuBtnHeight)) {
+                drawButton("Load Game",posStruct(width/2,height/2),colorStruct(1,1,1),colorStruct(0,0,0),menuBtnWidth,menuBtnHeight);
+                hoverLoadBtn = true;
+            } else {
+                // It's hovering
+                drawButton("Load Game",posStruct(width/2,height/2),colorStruct(0,0,0),colorStruct(1,1,1),menuBtnWidth,menuBtnHeight);
+                hoverLoadBtn = false;
+            }
 
             // Draw Controls
             drawText_Center("Controls:",menuColor,width/2,height-(24*5));
@@ -199,13 +225,8 @@ void display() {
 
             // Tick the Tent's Day Timer
             if (!tent.tick()) {
-                // Day is over
-                gameOverBool = true;
-
                 // Day is over, Not all items collected
                 triggerAlert("You ran out of time.");
-
-                // TODO: Game over screen because day ended before all items collected
                 gameState = lostGame;
 
             } else {
@@ -482,14 +503,32 @@ void cursor(int x, int y) {
 // state will be GLUT_UP or GLUT_DOWN
 void mouse(int button, int state, int x, int y) {
     switch(gameState) {
+        case mainMenu:
+            // Check mouse clicks
+            if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
+                // Check for hovers
+                if(hoverStartBtn) {
+                    // Start game
+                    // Switch game state
+                    gameState = playing;
+
+                    // Prepare the game
+                    prepareGameToStart();
+                } else if(hoverLoadBtn) {
+                    // Start game and load
+                }
+            }
+            break;
+
         case lostGame: {
-            if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON){
+            if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
                 // Relocate to main menu
                 gameState = mainMenu;
 
                 // Change background color
                 glClearColor(0.3f, 0.5f, 0.4f, 0.0f);
             }
+            break;
         }
     }
 
@@ -640,6 +679,30 @@ void drawHUD() {
     // Draw Timer
     string hudTimer = "Day "+to_string(tent.getDay()+1)+": "+to_string(tent.getCurrentTime());
     drawText_Center(hudTimer,colorStruct(1,1,1),width/2,height-10);
+}
+
+void drawButton(const std::string &text, const posStruct &pos, const colorStruct &textColor, const colorStruct &buttonColor, int buttonWidth, int buttonHeight) {
+    drawSquare(buttonColor,pos,buttonWidth,buttonHeight);
+    drawText_Center(text,textColor,pos.xPos,pos.yPos+(buttonHeight/3));
+}
+
+void prepareGameToStart() {
+    // Set day handlers
+    collectedAllItems = false;
+    dayIsOver = false;
+    tripMode = false;
+
+    // Spawn Items
+    generateItems();
+
+    // Set Alert
+    alertText = " ";
+
+    // Set the current day
+    curDay = tent.getDay();
+
+    // Set the tent timer
+    tent.setTime(tent.getStartTime());
 }
 
 void generateItems() {
