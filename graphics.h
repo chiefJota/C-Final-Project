@@ -81,6 +81,8 @@ void drawAlert();
 
 void hideAlert(int num);
 
+void gameOverDisplay();
+
 GLint getTextCenter(void* font, const std::string &text);
 
 #endif /* graphics_h */
