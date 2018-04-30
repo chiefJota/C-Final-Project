@@ -4,15 +4,16 @@
 	* [x] drawPlayer method in graphics_starter (Takes color and position. Has 'arms'.)
 * [x] Instantiate the Player and Tent objects in graphics_starter init method
 * [x] Instantiate the Items Vector in graphics_starter init method
-* [ ] Logic to find when a new day starts
-	* [ ] Generate item objects at random locations
-	* [ ] Add generated items to Items Vector
-* [ ] Draw Player, Tent, and all Items in the Items Vector using drawPlayer and drawSquare respectively
+* [x] Logic to find when a new day starts
+	* [x] Generate item objects at random locations
+	* [ ] Give item locations bounds to avoid overlap
+	* [x] Add generated items to Items Vector
+* [x] Draw Player, Tent, and all Items in the Items Vector using drawPlayer and drawSquare respectively
 * [x] Allow player to move
-* [ ] Add game states
-	* [ ] Instantiate current state in graphics_starter init method
-	* [ ] Add start screen
-	* [ ] Add death screen
+* [x] Add game states
+	* [x] Instantiate current state in graphics_starter init method
+	* [x] Add start screen
+	* [x] Add death screen
 
 ## Git with a Group Commands
 To be used after you link your local repo to the project on GitLab.
