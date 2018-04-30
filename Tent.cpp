@@ -26,6 +26,10 @@ void Tent::goToNextDay() {
     startTime = startTime - (curDay * 10);
 }
 
+void Tent::setDay(int daySet){
+    curDay = daySet;
+}
+
 int Tent::getDay(){
     return curDay;
 }

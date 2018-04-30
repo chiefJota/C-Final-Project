@@ -106,6 +106,8 @@ public:
     */
     int getDay();
 
+    void setDay(int daySet);
+
     /**
      * Requires: None
      * Modifies: None
