@@ -28,7 +28,7 @@ string alertText;
 
 // Global Game Functions
 enum GameState {mainMenu,playing,lostGame};
-GameState gameState = playing;
+GameState gameState = mainMenu;
 
 // Global Data Variables
 Player player(colorStruct(0.85,0,0),posStruct((int)width/2,(int)height/2));
@@ -38,7 +38,8 @@ string saveFileName;
 bool collectedAllItems;
 bool dayIsOver;
 bool tripMode;
-bool gameOverBool;
+bool hoverStartBtn;
+bool hoverLoadBtn;
 
 // Initial Startup
 // Sets the Global Graphic variables
@@ -51,7 +52,6 @@ void init() {
     collectedAllItems = false;
     dayIsOver = false;
     tripMode = false;
-    gameOverBool = false;
 
     // Set Alert
     alertText = " ";
@@ -67,9 +67,7 @@ void init() {
 
     // Set up Day
     if(gameState == playing) {
-        // TODO: Move to start button execution in addition to here
-        curDay = tent.getDay();
-        tent.setTime(tent.getStartTime());
+        prepareGameToStart();
     }
 }
 
@@ -100,6 +98,51 @@ void display() {
     // Check game state
     switch(gameState) {
         case mainMenu: {
+            // Disable blending
+            glDisable(GL_BLEND);
+
+            // Define color
+            colorStruct menuColor = colorStruct(1,1,1);
+
+            // Draw Title Text
+            string titleOfGame = "Trippy Hike";
+            drawText_Center(titleOfGame,colorStruct(1,0,0),(width/2)-15,75);
+            drawText_Center(titleOfGame,colorStruct(0,1,0),(width/2)+15,70);
+            drawText_Center(titleOfGame,colorStruct(0,0,1),(width/2)-25,90);
+            drawText_Center(titleOfGame,colorStruct(0,0,0),(width/2)+2,78);
+            drawText_Center(titleOfGame,colorStruct(0,0,0),(width/2)+2,73);
+            drawText_Center(titleOfGame,colorStruct(0,0,0),(width/2)-2,73);
+            drawText_Center(titleOfGame,colorStruct(0,0,0),(width/2)-2,78);
+            drawText_Center(titleOfGame,menuColor,width/2,75);
+
+            // Draw Buttons
+            int menuBtnWidth = 150;
+            int menuBtnHeight = 50;
+
+            if(isShapeTouchingShape(posStruct(mouseX,mouseY),5,5,posStruct(width/2,(height/2)-menuBtnHeight-10),menuBtnWidth,menuBtnHeight)) {
+                drawButton("New Game",posStruct(width/2,(height/2)-menuBtnHeight-10),colorStruct(1,1,1),colorStruct(0,0,0),menuBtnWidth,menuBtnHeight);
+                hoverStartBtn = true;
+            } else {
+                // It's hovering
+                drawButton("New Game",posStruct(width/2,(height/2)-menuBtnHeight-10),colorStruct(0,0,0),colorStruct(1,1,1),menuBtnWidth,menuBtnHeight);
+                hoverStartBtn = false;
+            }
+
+            if(isShapeTouchingShape(posStruct(mouseX,mouseY),5,5,posStruct(width/2,height/2),menuBtnWidth,menuBtnHeight)) {
+                drawButton("Load Game",posStruct(width/2,height/2),colorStruct(1,1,1),colorStruct(0,0,0),menuBtnWidth,menuBtnHeight);
+                hoverLoadBtn = true;
+            } else {
+                // It's hovering
+                drawButton("Load Game",posStruct(width/2,height/2),colorStruct(0,0,0),colorStruct(1,1,1),menuBtnWidth,menuBtnHeight);
+                hoverLoadBtn = false;
+            }
+
+            // Draw Controls
+            drawText_Center("Controls:",menuColor,width/2,height-(24*5));
+            drawText_Center("[Mouse Hover] Reveal Item Name",menuColor,width/2,height-(24*4));
+            drawText_Center("[W/A/S/D] Move Character",menuColor,width/2,height-(24*3));
+            drawText_Center("[E] Interact",menuColor,width/2,height-(24*2));
+            drawText_Center("[ESC] Exit and Save Game",menuColor,width/2,height-24);
             break;
         }
 
@@ -175,28 +218,21 @@ void display() {
                     // Check if mushroom
                     if (item->isMushroom()) {
                         // Overlapped
-                        drawText_Center("Poison", item->getPosition().xPos, item->getPosition().yPos);
+                        drawText_Center("Poison", colorStruct(1,0,0), item->getPosition().xPos, item->getPosition().yPos);
                     } else {
                         // Overlapped
-                        drawText_Center(item->getItem(), item->getPosition().xPos, item->getPosition().yPos);
+                        drawText_Center(item->getItem(), colorStruct(1,1,1), item->getPosition().xPos, item->getPosition().yPos);
                     }
                 }
             }
 
             // Tick the Tent's Day Timer
             if (!tent.tick()) {
-                cout << "Over " << tent.getCurrentTime() << endl;
-                // Day is over
-                gameOverBool = true;
-
                 // Day is over, Not all items collected
                 triggerAlert("You ran out of time.");
-
-                // TODO: Game over screen because day ended before all items collected
                 gameState = lostGame;
 
             } else {
-                cout << "Going " << tent.getCurrentTime() << endl;
                 // Day is continuing
                 // Draw HUD
                 drawHUD();
@@ -209,21 +245,25 @@ void display() {
             break;
         }
     }
+
     // Draw Alert Text
     if (showAlert) {
         drawAlert();
-        alertTimer(0);
+//        alertTimer(0);
     }
 
     // Render trigger
     glFlush();
 }
 
+// Game is over
 void gameOverDisplay(){
-    drawText_Center("You are dead. You survived: " + to_string(tent.getDay()+1) + " days.",width/2,height/2);
-    triggerAlert("Click to return to menu");
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    // Do the text
+    drawText_Center("You made it to Day "+to_string(tent.getDay()+1)+" and died.",colorStruct(1,1,1),width/2,(height/2)-24);
+    drawText_Center("Click to continue.",colorStruct(1,1,1),width/2,(height/2)+24);
 
+    // Color
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 // http://www.theasciicode.com.ar/ascii-control-characters/escape-ascii-code-27.html
@@ -466,10 +506,40 @@ void cursor(int x, int y) {
 // state will be GLUT_UP or GLUT_DOWN
 void mouse(int button, int state, int x, int y) {
     switch(gameState) {
-        case lostGame: {
-            if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON){
-                gameState = mainMenu;
+        case mainMenu:
+            // Check mouse clicks
+            if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
+                // Check for hovers
+                if(hoverStartBtn) {
+                    // Start game
+                    // Switch game state
+                    gameState = playing;
+
+                    // Prepare the game
+                    prepareGameToStart();
+                } else if(hoverLoadBtn) {
+                    // Start game and load
+                    // Switch Game State
+                    gameState = playing;
+
+                    // Prepare the game
+                    prepareGameToStart();
+
+                    // Load Data
+                    loadGame(saveFileName);
+                }
             }
+            break;
+
+        case lostGame: {
+            if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
+                // Relocate to main menu
+                gameState = mainMenu;
+
+                // Change background color
+                glClearColor(0.3f, 0.5f, 0.4f, 0.0f);
+            }
+            break;
         }
     }
 
@@ -477,14 +547,14 @@ void mouse(int button, int state, int x, int y) {
 }
 
 void timer(int extra) {
+    // Check alert
+    if(showAlert) {
+        glutTimerFunc(680, hideAlert, 0);
+    }
 
+    // Do it
     glutPostRedisplay();
     glutTimerFunc(30, timer, 0);
-}
-
-void alertTimer(int extra) {
-    glutPostRedisplay();
-    glutTimerFunc(680, hideAlert, 0);
 }
 
 // Draw Function to create a square
@@ -581,13 +651,13 @@ bool isShapeTouchingShape(const posStruct &a, double aWidth, double aHeight, con
              a.yPos-(aHeight/2.0) > b.yPos+(bHeight/2.0));
 }
 
-void drawText_Center(const string &text, int textX, int textY) {
+void drawText_Center(const string &text, const colorStruct &color, int textX, int textY) {
     // Variable
     auto font = GLUT_BITMAP_TIMES_ROMAN_24;
 
     // Display String
     std::string message = text;
-    glColor3f(1,0,0);
+    glColor3f(color.red,color.green,color.blue);
 
     // Set Position
     GLint txtX = textX-getTextCenter(font,message);
@@ -619,7 +689,31 @@ void drawText_Center(const string &text, int textX, int textY) {
 void drawHUD() {
     // Draw Timer
     string hudTimer = "Day "+to_string(tent.getDay()+1)+": "+to_string(tent.getCurrentTime());
-    drawText_Center(hudTimer,width/2,height-10);
+    drawText_Center(hudTimer,colorStruct(1,1,1),width/2,height-10);
+}
+
+void drawButton(const std::string &text, const posStruct &pos, const colorStruct &textColor, const colorStruct &buttonColor, int buttonWidth, int buttonHeight) {
+    drawSquare(buttonColor,pos,buttonWidth,buttonHeight);
+    drawText_Center(text,textColor,pos.xPos,pos.yPos+(buttonHeight/3));
+}
+
+void prepareGameToStart() {
+    // Set day handlers
+    collectedAllItems = false;
+    dayIsOver = false;
+    tripMode = false;
+
+    // Spawn Items
+    generateItems();
+
+    // Set Alert
+    alertText = " ";
+
+    // Set the current day
+    curDay = tent.getDay();
+
+    // Set the tent timer
+    tent.setTime(tent.getStartTime());
 }
 
 void generateItems() {
@@ -695,6 +789,11 @@ bool saveGame(const string &fileName) {
         // Write Player and Tent to file
         fOut << player << "\n";
         fOut << tent << "\n";
+
+        // Write Item data
+        for (std::unique_ptr<Item> &item : ItemsList) {
+            fOut << "Item: " << item->getPosition().xPos << " " << item->getPosition().yPos << " " << item->isMushroom() << " \n";
+        }
     } else {
         // Out File did not open
         return false;
@@ -719,6 +818,28 @@ bool loadGame(const string &fileName) {
         // Write to objects
         fIn >> player;
         fIn >> tent;
+
+        // Check to see if save invalid
+        if(tent.getCurrentTime() <= 0) {
+            triggerAlert("Invalid Save");
+            return false;
+        }
+
+        // Write to items
+        for (std::unique_ptr<Item> &item : ItemsList) {
+            string junk;
+            fIn >> junk;
+
+            int inX;
+            int inY;
+            fIn >> inX;
+            fIn >> inY;
+            item->setPos(posStruct(inX,inY));
+
+            bool inPoison;
+            fIn >> inPoison;
+            item->setPoison(inPoison);
+        }
     } else {
         // In File did not open
         return false;
