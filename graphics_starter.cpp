@@ -689,9 +689,12 @@ void drawText_Center(const string &text, const colorStruct &color, int textX, in
 }
 
 void drawHUD() {
+    // Create Text
+    ostringstream hudText;
+    hudText << "Day " << (tent.getDay()+1) << ": " << fixed << std::setprecision(2) << (tent.getCurrentTime()/30);
+
     // Draw Timer
-    string hudTimer = "Day "+to_string(tent.getDay()+1)+": "+to_string(tent.getCurrentTime());
-    drawText_Center(hudTimer,colorStruct(1,1,1),width/2,height-10);
+    drawText_Center(hudText.str(),colorStruct(1,1,1),width/2,height-10);
 }
 
 void drawButton(const std::string &text, const posStruct &pos, const colorStruct &textColor, const colorStruct &buttonColor, int buttonWidth, int buttonHeight) {
