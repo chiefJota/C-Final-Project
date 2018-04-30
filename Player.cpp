@@ -98,6 +98,11 @@ void Player::changeWaterLevel(double change) {
     waterLevel += change;
 }
 
+void Player::setPlayerPos(int x, int y){
+    pos.yPos = y;
+    pos.xPos = x;
+}
+
 void Player::setFoodLevel(double level) {
     foodLevel = level;
 }

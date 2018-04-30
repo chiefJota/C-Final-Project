@@ -511,6 +511,8 @@ void mouse(int button, int state, int x, int y) {
             if(button == GLUT_LEFT_BUTTON || button == GLUT_RIGHT_BUTTON) {
                 // Check for hovers
                 if(hoverStartBtn) {
+                    tent.setDay(0);
+                    player.setPlayerPos(width/2,height/2);
                     // Start game
                     // Switch game state
                     gameState = playing;

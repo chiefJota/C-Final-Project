@@ -146,6 +146,8 @@ public:
     */
     friend std::istream& operator >> (std::istream& ins, Player &p);
 
+    void setPlayerPos(int x, int y);
+
 };
 
 #endif
