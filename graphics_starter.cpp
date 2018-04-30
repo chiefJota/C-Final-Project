@@ -98,6 +98,9 @@ void display() {
     // Check game state
     switch(gameState) {
         case mainMenu: {
+            // Disable blending
+            glDisable(GL_BLEND);
+
             // Define color
             colorStruct menuColor = colorStruct(1,1,1);
 
@@ -246,7 +249,7 @@ void display() {
     // Draw Alert Text
     if (showAlert) {
         drawAlert();
-        alertTimer(0);
+//        alertTimer(0);
     }
 
     // Render trigger
@@ -536,14 +539,14 @@ void mouse(int button, int state, int x, int y) {
 }
 
 void timer(int extra) {
+    // Check alert
+    if(showAlert) {
+        glutTimerFunc(680, hideAlert, 0);
+    }
 
+    // Do it
     glutPostRedisplay();
     glutTimerFunc(30, timer, 0);
-}
-
-void alertTimer(int extra) {
-    glutPostRedisplay();
-    glutTimerFunc(680, hideAlert, 0);
 }
 
 // Draw Function to create a square
