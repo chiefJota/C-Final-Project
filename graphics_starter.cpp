@@ -519,6 +519,14 @@ void mouse(int button, int state, int x, int y) {
                     prepareGameToStart();
                 } else if(hoverLoadBtn) {
                     // Start game and load
+                    // Switch Game State
+                    gameState = playing;
+
+                    // Prepare the game
+                    prepareGameToStart();
+
+                    // Load Data
+                    loadGame(saveFileName);
                 }
             }
             break;
@@ -781,6 +789,11 @@ bool saveGame(const string &fileName) {
         // Write Player and Tent to file
         fOut << player << "\n";
         fOut << tent << "\n";
+
+        // Write Item data
+        for (std::unique_ptr<Item> &item : ItemsList) {
+            fOut << "Item: " << item->getPosition().xPos << " " << item->getPosition().yPos << " " << item->isMushroom() << " \n";
+        }
     } else {
         // Out File did not open
         return false;
@@ -805,6 +818,28 @@ bool loadGame(const string &fileName) {
         // Write to objects
         fIn >> player;
         fIn >> tent;
+
+        // Check to see if save invalid
+        if(tent.getCurrentTime() <= 0) {
+            triggerAlert("Invalid Save");
+            return false;
+        }
+
+        // Write to items
+        for (std::unique_ptr<Item> &item : ItemsList) {
+            string junk;
+            fIn >> junk;
+
+            int inX;
+            int inY;
+            fIn >> inX;
+            fIn >> inY;
+            item->setPos(posStruct(inX,inY));
+
+            bool inPoison;
+            fIn >> inPoison;
+            item->setPoison(inPoison);
+        }
     } else {
         // In File did not open
         return false;
