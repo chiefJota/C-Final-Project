@@ -47,23 +47,33 @@ Player::Player(colorStruct color, posStruct pos) : color(color), pos(pos) {
 void Player::move(moveDirection dir) {
     // Variables
     int moveAmount = 10;
+    int xMax = 500;
+    int yMax = 500;
 
     // Switch to direction
     switch(dir) {
         case up:
-            pos.yPos -= moveAmount;
+            if(pos.yPos-moveAmount > 0) {
+                pos.yPos -= moveAmount;
+            }
             break;
 
         case down:
-            pos.yPos += moveAmount;
+            if(pos.yPos + moveAmount < yMax) {
+                pos.yPos += moveAmount;
+            }
             break;
 
         case left:
-            pos.xPos -= moveAmount;
+            if(pos.xPos - moveAmount > 0) {
+                pos.xPos -= moveAmount;
+            }
             break;
 
         case right:
-            pos.xPos += moveAmount;
+            if(pos.xPos + moveAmount < xMax) {
+                pos.xPos += moveAmount;
+            }
             break;
     }
 }
