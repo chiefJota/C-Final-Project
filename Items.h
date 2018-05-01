@@ -16,7 +16,7 @@ protected:
     colorStruct color;
     posStruct pos;
     bool isPoisonous;
-    std::vector<int> randSeeds = {1,2,3,4,5,6};
+    std::vector<int> randSeeds = {2,4,8,16,32,64};
 
 public:
 
