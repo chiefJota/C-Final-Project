@@ -725,19 +725,60 @@ void generateItems() {
     // Clear the ItemsList
     ItemsList.clear();
 
-    //resize the vector of items
-    //ItemsList.resize(6);
-    std::vector<int> randNums = {rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height, rand() % (int)width, rand() % (int)height};
+    //create vector of ints
+    vector<int> randNums;
+
+    //seed random generator
+    srand(time(NULL));
+
+    // Generate Cordinates
+    for(int i = 0; i < 12; i++) {
+        // Get Valid Cordinates
+        bool validCords = false;
+        while(!validCords) {
+            // Generate Cords
+            // srand(time(NULL));
+            int newCordX = (rand() % (int) width);
+            // srand(time(NULL));
+            int newCordY = (rand() % (int) height);
+
+            cout << "(" << newCordX << "," << newCordY << ")" << endl;
+
+            // Check cords
+            int newCordPadding = 20;
+
+            // Check X Left and Right
+            if(newCordX > newCordPadding && newCordX < (width-newCordPadding)) {
+                // Check Y Top and Bottom
+                if(newCordY > newCordPadding && newCordY < (height-newCordPadding)) {
+                    // Make sure it isn't over the tent
+                    if(!isShapeTouchingShape(posStruct(newCordX,newCordY),itemWidth,itemHeight,tent.getPos(),tentWidth,tentHeight)) {
+                        validCords = true;
+
+                        // Add to list
+                        randNums.push_back(newCordX);
+                        randNums.push_back(newCordY);
+                    }
+                }
+            }
+        }
+    }
 
     //Populates vector of items with FoodItems and the position is random
-    ItemsList.push_back(std::make_unique<FoodItem>("Berries", colorStruct(1.0,0.0,0.0),posStruct(randNums[0],randNums[1])));
-    ItemsList.push_back(std::make_unique<FoodItem>("Rocks", colorStruct(0.0,0.06,0.46),posStruct(randNums[2],randNums[3])));
-    ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83,0.71,0.55),posStruct(randNums[4],randNums[5])));
+    ItemsList.push_back(
+            std::make_unique<FoodItem>("Berries", colorStruct(1.0, 0.0, 0.0), posStruct(randNums[0], randNums[1])));
+    ItemsList.push_back(
+            std::make_unique<FoodItem>("Rocks", colorStruct(0.0, 0.06, 0.46), posStruct(randNums[2], randNums[3])));
+    ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83, 0.71, 0.55),
+                                                   posStruct(randNums[4], randNums[5])));
 
     //Populates vector of items with WaterItems
-    ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0,0.0,1.0),posStruct(randNums[6],randNums[7])));
-    ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0,0.3,0.8),posStruct(randNums[8],randNums[9])));
-    ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0,0.1,0.95),posStruct(randNums[10],randNums[11])));
+    ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0, 0.0, 1.0),
+                                                    posStruct(randNums[6], randNums[7])));
+    ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0, 0.3, 0.8),
+                                                    posStruct(randNums[8], randNums[9])));
+    ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0, 0.1, 0.95),
+                                                    posStruct(randNums[10], randNums[11])));
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */
