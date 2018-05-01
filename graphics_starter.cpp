@@ -24,6 +24,7 @@ double playerHeight = 25;
 double tentWidth = 40;
 double tentHeight = 40;
 bool showAlert = false;
+//bool isInBounds = false;
 string alertText;
 
 // Global Game Functions
@@ -725,6 +726,7 @@ void generateItems() {
     // Clear the ItemsList
     ItemsList.clear();
 
+<<<<<<< HEAD
     //create vector of ints
     vector<int> randNums;
 
@@ -733,18 +735,42 @@ void generateItems() {
 
     // Generate Cordinates
     for(int i = 0; i < 12; i++) {
+=======
+    //while loop to for bounds on item spawning
+//    while(isInBounds) {
+
+    //resize the vector of items
+    //ItemsList.resize(6);
+
+    //create random generator
+
+
+    vector<int> randNums;
+    randNums.resize(12);
+
+    // Generate Cordinates
+    for(int i = 0; i <= 12, i++;) {
+>>>>>>> 23afdabbb88bfdb4e9292f77904b7d355e37f675
         // Get Valid Cordinates
         bool validCords = false;
         while(!validCords) {
             // Generate Cords
+<<<<<<< HEAD
             // srand(time(NULL));
             int newCordX = (rand() % (int) width);
             // srand(time(NULL));
             int newCordY = (rand() % (int) height);
+=======
+            srand(time(NULL));
+            int newCordX = rand() % (int) width - 10;
+            srand(time(NULL));
+            int newCordY = rand() % (int) height - 20;
+>>>>>>> 23afdabbb88bfdb4e9292f77904b7d355e37f675
 
             cout << "(" << newCordX << "," << newCordY << ")" << endl;
 
             // Check cords
+<<<<<<< HEAD
             int newCordPadding = 20;
 
             // Check X Left and Right
@@ -763,6 +789,38 @@ void generateItems() {
             }
         }
     }
+=======
+            int newCordPadding = 10;
+            // Make sure it isn't over the tent
+            if(isShapeTouchingShape(posStruct(newCordX,newCordY),itemWidth,itemHeight,tent.getPos(),tentWidth,tentHeight)) {
+                validCords = true;
+
+                // Add to list
+                randNums.push_back(newCordX);
+                randNums.push_back(newCordY);
+            }
+//                // Check X Left and Right
+//                if(newCordX > newCordPadding && newCordX < (width-newCordPadding)) {
+//                    // Check Y Top and Bottom
+//                    if(newCordY > newCordPadding && newCordY < (height-newCordPadding)) {
+//                        // Make sure it isn't over the tent
+//                        if(!isShapeTouchingShape(posStruct(newCordX,newCordY),itemWidth,itemHeight,tent.getPos(),tentWidth,tentHeight)) {
+//                            validCords = true;
+//
+//                            // Add to list
+//                            randNums.push_back(newCordX);
+//                            randNums.push_back(newCordY);
+//                        }
+//                    }
+//                }
+        }
+    }
+
+//        std::vector<int> randNums = {rand() % (int) width - 15, rand() % (int) height - 15, rand() % (int) width - 15,
+//                                     rand() % (int) height - 15, rand() % (int) width - 15, rand() % (int) height - 15,
+//                                     rand() % (int) width - 15, rand() % (int) height - 15, rand() % (int) width - 15,
+//                                     rand() % (int) height - 15, rand() % (int) width - 15, rand() % (int) height - 15};
+>>>>>>> 23afdabbb88bfdb4e9292f77904b7d355e37f675
 
     //Populates vector of items with FoodItems and the position is random
     ItemsList.push_back(
@@ -779,6 +837,12 @@ void generateItems() {
                                                     posStruct(randNums[8], randNums[9])));
     ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0, 0.1, 0.95),
                                                     posStruct(randNums[10], randNums[11])));
+<<<<<<< HEAD
+=======
+
+//    }
+
+>>>>>>> 23afdabbb88bfdb4e9292f77904b7d355e37f675
 }
 
 /* Main function: GLUT runs as a console application starting at main()  */
