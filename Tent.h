@@ -14,7 +14,7 @@ protected:
     posStruct pos;
     int curDay = 0;
     double curTime = 0;
-    double startTime = 1000;
+    double startTime = 1500;
 //    std::vector<std::unique_ptr<Item>> items;
     int dayOut;
 
