@@ -6,7 +6,7 @@
 * [x] Instantiate the Items Vector in graphics_starter init method
 * [x] Logic to find when a new day starts
 	* [x] Generate item objects at random locations
-	* [ ] Give item locations bounds to avoid overlap
+	* [x] Give item locations bounds to avoid overlap
 	* [x] Add generated items to Items Vector
 * [x] Draw Player, Tent, and all Items in the Items Vector using drawPlayer and drawSquare respectively
 * [x] Allow player to move
