@@ -729,12 +729,25 @@ void generateItems() {
     //create vector of ints
     vector<int> randNums;
 
+    // Create Vector of bool
+    vector<bool> randBools;
+
     //seed random generator
     srand(time(NULL));
 
-    // Generate Cordinates
+    // Generate Coordinates
     for(int i = 0; i < 12; i++) {
-        // Get Valid Cordinates
+        // Choose if poisonous or not
+        int poisonChance = rand() % 100;
+        if(poisonChance <= 25) {
+            // It's poison
+            randBools.push_back(true);
+        } else {
+            // It's not poison
+            randBools.push_back(false);
+        }
+
+        // Get Valid Coordinates
         bool validCords = false;
         while(!validCords) {
             // Generate Cords
@@ -742,8 +755,6 @@ void generateItems() {
             int newCordX = (rand() % (int) width);
             // srand(time(NULL));
             int newCordY = (rand() % (int) height);
-
-            cout << "(" << newCordX << "," << newCordY << ")" << endl;
 
             // Check cords
             int newCordPadding = 20;
@@ -766,20 +777,26 @@ void generateItems() {
     }
 
     //Populates vector of items with FoodItems and the position is random
-    ItemsList.push_back(
-            std::make_unique<FoodItem>("Berries", colorStruct(1.0, 0.0, 0.0), posStruct(randNums[0], randNums[1])));
-    ItemsList.push_back(
-            std::make_unique<FoodItem>("Rocks", colorStruct(0.0, 0.06, 0.46), posStruct(randNums[2], randNums[3])));
-    ItemsList.push_back(std::make_unique<FoodItem>("Mysterious Flesh", colorStruct(0.83, 0.71, 0.55),
-                                                   posStruct(randNums[4], randNums[5])));
+    FoodItem foodItemA("Berries", colorStruct(1.0, 0.0, 0.0), posStruct(randNums[0], randNums[1]));
+    foodItemA.setPoison(randBools[0]);
+    FoodItem foodItemB("Rocks", colorStruct(0.0, 0.06, 0.46), posStruct(randNums[2], randNums[3]));
+    foodItemB.setPoison(randBools[1]);
+    FoodItem foodItemC("Mysterious Flesh", colorStruct(0.83, 0.71, 0.55), posStruct(randNums[4], randNums[5]));
+    foodItemC.setPoison(randBools[2]);
+    ItemsList.push_back(std::make_unique<FoodItem>(foodItemA));
+    ItemsList.push_back(std::make_unique<FoodItem>(foodItemB));
+    ItemsList.push_back(std::make_unique<FoodItem>(foodItemC));
 
     //Populates vector of items with WaterItems
-    ItemsList.push_back(std::make_unique<WaterItem>("River Water", colorStruct(0.0, 0.0, 1.0),
-                                                    posStruct(randNums[6], randNums[7])));
-    ItemsList.push_back(std::make_unique<WaterItem>("Four Loko", colorStruct(0.0, 0.3, 0.8),
-                                                    posStruct(randNums[8], randNums[9])));
-    ItemsList.push_back(std::make_unique<WaterItem>("Distilled Water", colorStruct(0.0, 0.1, 0.95),
-                                                    posStruct(randNums[10], randNums[11])));
+    WaterItem waterItemA("River Water", colorStruct(0.0, 0.0, 1.0), posStruct(randNums[6], randNums[7]));
+    waterItemA.setPoison(randBools[3]);
+    WaterItem waterItemB("Four Loko", colorStruct(0.0, 0.3, 0.8), posStruct(randNums[8], randNums[9]));
+    waterItemB.setPoison(randBools[4]);
+    WaterItem waterItemC("Distilled Water", colorStruct(0.0, 0.1, 0.95), posStruct(randNums[10], randNums[11]));
+    waterItemC.setPoison(randBools[5]);
+    ItemsList.push_back(std::make_unique<WaterItem>(waterItemA));
+    ItemsList.push_back(std::make_unique<WaterItem>(waterItemB));
+    ItemsList.push_back(std::make_unique<WaterItem>(waterItemC));
 }
 
 
